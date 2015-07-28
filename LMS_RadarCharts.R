@@ -3,6 +3,22 @@
 setwd("X:\\bhinton\\Ind Z Scores")
 #Must use forward slash or double blackslash.... a single slash will not work
 
+
+
+
+
+#TEST CHANGES
+#TESAT CHANGES
+
+
+
+
+
+
+
+
+
+
 BF_Zind = read.csv("BF_Comb_Zind.csv")  # read csv file
 
 
@@ -10,9 +26,10 @@ BF_Zind_15 <- BF_Zind[BF_Zind[, "Age"] == 15,]  #Selects only 15 yr olds?
 
 df_BF_Zind_15 <- data.frame(BF_Zind_15)
 df_BF_FMI_Zind_15 <- df_BF_Zind_15[1:4,c("Z_FMI_Tr","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")]
+df_BF_FFMI_Zind_15 <- df_BF_Zind_15[1:4,c("Z_FFMI_Tr","Z_FFMI_LA", "Z_FFMI_LL", "Z_FFMI_RL", "Z_FFMI_RA")]
 #1:4 selects the first 4 rows, the c and quotes selects certain columns
 Test_Dat <- df_BF_FMI_Zind_15
-
+Test_Dat1 <- df_BF_FFMI_Zind_15
 
 maxmin <- data.frame(
  Z_FMI_Tr=c(2, -2),
@@ -21,14 +38,26 @@ maxmin <- data.frame(
  Z_FMI_RL=c(2, -2),
  Z_FMI_RA=c(2, -2))
 
-dat1 <- rbind(maxmin,Test_Dat)
+maxmin1 <- data.frame(
+  Z_FFMI_Tr=c(2, -2),
+  Z_FFMI_LA=c(2, -2),
+  Z_FFMI_LL=c(2, -2),
+  Z_FFMI_RL=c(2, -2),
+  Z_FFMI_RA=c(2, -2))
 
-radarchart(dat1, axistype=3, seg=4, cex.main=4, plty=1, plwd=2, 
+dat <- rbind(maxmin,Test_Dat)
+dat1 <- rbind(maxmin1,Test_Dat1)
+
+op <- par(mar=c(1, 2, 2, 1),mfrow=c(2, 2))
+
+radarchart(dat, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
  vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),  title="4 Black Female FMI Charts")
 #cex.lab doesnt do anything
 #Cex.main is for the title
 
-
+radarchart(dat1, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),  title="4 Black Female FFMI Charts")
+#cex.lab doesnt do anything
 
 
 
