@@ -1,22 +1,10 @@
+#two programs... one will plot FMI/FFMI separately,
+#the other superimposes them
+
 
 # Set the working directory
 setwd("X:\\bhinton\\Ind Z Scores")
 #Must use forward slash or double blackslash.... a single slash will not work
-
-
-
-
-
-#TEST CHANGES
-#TESAT CHANGES
-
-
-
-
-
-
-
-
 
 
 BF_Zind = read.csv("BF_Comb_Zind.csv")  # read csv file
@@ -58,6 +46,102 @@ radarchart(dat, axistype=3, seg=4, cex.main=1, plty=1, plwd=2,
 radarchart(dat1, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
            vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),  title="4 Black Female FFMI Charts")
 #cex.lab doesnt do anything
+
+
+
+legend('topright', c("Person1", "Person2", "Person3", "Person4") , lty=1, col=c("Black", "Red","Green","Blue"), bty='n', cex=1)    
+# gives the legend appropriate symbols (lines)
+
+
+
+
+
+#Test for superimposing the images
+#extra line
+
+setwd("X:\\bhinton\\Ind Z Scores")
+#Must use forward slash or double blackslash.... a single slash will not work
+
+BF_Zind = read.csv("BF_Comb_Zind.csv")  # read csv file
+
+BF_Zind_15 <- BF_Zind[BF_Zind[, "Age"] == 15,]  #Selects only 15 yr olds?
+
+df_BF_Zind_15 <- data.frame(BF_Zind_15)
+df_BF_FMI_Zind_15 <- df_BF_Zind_15[1:4,c("Z_FMI_Tr","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")]
+df_BF_FFMI_Zind_15 <- df_BF_Zind_15[1:4,c("Z_FFMI_Tr","Z_FFMI_LA", "Z_FFMI_LL", "Z_FFMI_RL", "Z_FFMI_RA")]
+#1:4 selects the first 4 rows, the c and quotes selects certain columns
+fmiDat <- df_BF_FMI_Zind_15
+ffmiDat <- df_BF_FFMI_Zind_15
+
+
+colnames(fmiDat) <- c("Z_Tr", "Z_LA", "Z_LL", "Z_RL", "Z_RA")
+colnames(ffmiDat) <- c("Z_Tr", "Z_LA", "Z_LL", "Z_RL", "Z_RA")
+
+
+maxmin <- data.frame(
+  Z_Tr=c(2, -2),
+  Z_LA=c(2, -2),
+  Z_LL=c(2, -2),
+  Z_RL=c(2, -2),
+  Z_RA=c(2, -2))
+
+maxmin1 <- data.frame(
+  Z_Tr=c(2, -2),
+  Z_LA=c(2, -2),
+  Z_LL=c(2, -2),
+  Z_RL=c(2, -2),
+  Z_RA=c(2, -2))
+
+ind1Dat <- rbind(maxmin,fmiDat[1,],ffmiDat[1,])
+ind2Dat <- rbind(maxmin,fmiDat[2,],ffmiDat[2,])
+ind3Dat <- rbind(maxmin,fmiDat[3,],ffmiDat[3,])
+ind4Dat <- rbind(maxmin,fmiDat[4,],ffmiDat[4,])
+
+
+
+op <- par(mar=c(1, 2, 2, 1),mfrow=c(2, 2))
+
+radarchart(ind1Dat, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),  title="4 Black Female FMI Charts")
+#cex.lab doesnt do anything
+#Cex.main is for the title
+
+radarchart(ind2Dat, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),  title="4 Black Female FMI Charts")
+#cex.lab doesnt do anything
+#Cex.main is for the title
+radarchart(ind3Dat, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),  title="4 Black Female FMI Charts")
+#cex.lab doesnt do anything
+#Cex.main is for the title
+radarchart(ind4Dat, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),  title="4 Black Female FMI Charts")
+#cex.lab doesnt do anything
+#Cex.main is for the title
+
+
+legend('topright', c("FMI", "FFMI") , lty=1, col=c("Black", "Red"), bty='n', cex=1)    
+        # gives the legend appropriate symbols (lines)
+       
+      # gives the legend lines the correct color and width
+
+
+#Color scheme.... black first, then red?
+#Black is FMI
+#Red is FFMI
+
+
+
+radarchart(dat1, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),  title="4 Black Female FFMI Charts")
+#cex.lab doesnt do anything
+
+
+
+
+
+
+
 
 
 
