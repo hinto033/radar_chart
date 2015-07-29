@@ -1,49 +1,82 @@
-#two programs... one will plot FMI/FFMI separately,
-#the other superimposes them
+#This program will take a certain amount of 
+#individuals that you select and create radar charts for them
+#It requires a certain number of inputs at the beginning to function properly
+
+#Required Packages: fmsb (Contains radar function)
+#must load and install the package in order for the code to run
 
 
-# Set the working directory
-setwd("X:\\bhinton\\Ind Z Scores")
-#Must use forward slash or double blackslash.... a single slash will not work
 
 
-BF_Zind = read.csv("BF_Comb_Zind.csv")  # read csv file
+#NEED TO DO:
+#Include age of individuals in title and adjust for different race/gender
+#Work on including the ability for the second program to 
+#adjust for number of users (Right now only works with 4)
+#Merge Maxmins from 2 dataframes
 
 
-BF_Zind_15 <- BF_Zind[BF_Zind[, "Age"] == 15,]  #Selects only 15 yr olds?
+#Bigger longer goal: get one large data sheet and be able 
+#to select race/gender/etc all at once without uploading different files.
 
-df_BF_Zind_15 <- data.frame(BF_Zind_15)
-df_BF_FMI_Zind_15 <- df_BF_Zind_15[1:4,c("Z_FMI_Tr","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")]
-df_BF_FFMI_Zind_15 <- df_BF_Zind_15[1:4,c("Z_FFMI_Tr","Z_FFMI_LA", "Z_FFMI_LL", "Z_FFMI_RL", "Z_FFMI_RA")]
+
+#####
+#                                        #
+#                                        #
+#Part A: Producing separate FMI/LMI Charts
+#                                        #
+#                                        #
+#Parameter input:
+setwd("X:\\bhinton\\Ind Z Scores") # Set the working directory
+#Must use forward slash or double blackslash. a single backslash will not work in R
+Zind = read.csv("BF_Comb_Zind.csv")  # read csv file  BF = Black Female
+#Other options are: BF_Comb_Zind.csv  BM_Comb_Zind.csv   (Black male/female)
+#                   WF_Comb_Zind.csv  WM_Comb_Zind.csv  (White male/female)
+#                   HF_Comb_Zind.csv  HF_Comb_Zind.csv  (Hispanic/Mexican Male/female)
+
+
+selectAge = 15
+selectNumber = 4
+#Currently code will only select the first selectNumber rows in the file
+
+ZindAges <- Zind[Zind[, "Age"] == selectAge,] 
+#Selects patients of certain age
+
+dfZindAges <- data.frame(ZindAges)  #Converts to dataframe
+dfZindAgesFmi <- dfZindAges[1:selectNumber,c("Z_FMI_Tr","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")]
+dfZindAgesFfmi <- dfZindAges[1:selectNumber,c("Z_FFMI_Tr","Z_FFMI_LA", "Z_FFMI_LL", "Z_FFMI_RL", "Z_FFMI_RA")]
 #1:4 selects the first 4 rows, the c and quotes selects certain columns
-Test_Dat <- df_BF_FMI_Zind_15
-Test_Dat1 <- df_BF_FFMI_Zind_15
+fmiDat <- dfZindAgesFmi
+ffmiDat <- dfZindAgesFfmi
+
+colnames(fmiDat) <- c("Z_Tr", "Z_LA", "Z_LL", "Z_RL", "Z_RA")
+colnames(ffmiDat) <- c("Z_Tr", "Z_LA", "Z_LL", "Z_RL", "Z_RA")
+
 
 maxmin <- data.frame(
- Z_FMI_Tr=c(2, -2),
- Z_FMI_LA=c(2, -2),
- Z_FMI_LL=c(2, -2),
- Z_FMI_RL=c(2, -2),
- Z_FMI_RA=c(2, -2))
+  Z_Tr=c(2, -2),
+  Z_LA=c(2, -2),
+  Z_LL=c(2, -2),
+  Z_RL=c(2, -2),
+  Z_RA=c(2, -2))
 
 maxmin1 <- data.frame(
-  Z_FFMI_Tr=c(2, -2),
-  Z_FFMI_LA=c(2, -2),
-  Z_FFMI_LL=c(2, -2),
-  Z_FFMI_RL=c(2, -2),
-  Z_FFMI_RA=c(2, -2))
+  Z_Tr=c(2, -2),
+  Z_LA=c(2, -2),
+  Z_LL=c(2, -2),
+  Z_RL=c(2, -2),
+  Z_RA=c(2, -2))
 
-dat <- rbind(maxmin,Test_Dat)
-dat1 <- rbind(maxmin1,Test_Dat1)
+fmiDatFinal <- rbind(maxmin,fmiDat)
+ffmiDatFinal <- rbind(maxmin1,ffmiDat)
 
-op <- par(mar=c(1, 2, 2, 1),mfrow=c(2, 2))
-
-radarchart(dat, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+op <- par(mar=c(1, 2, 2, 1),mfrow=c(1, 2))
+#mfrow: 1st  number is no. rows, 2nd is no. columns.
+radarchart(fmiDatFinal, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
  vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),  title="4 Black Female FMI Charts")
 #cex.lab doesnt do anything
 #Cex.main is for the title
 
-radarchart(dat1, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+radarchart(ffmiDatFinal, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
            vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),  title="4 Black Female FFMI Charts")
 #cex.lab doesnt do anything
 
@@ -54,24 +87,35 @@ legend('topright', c("Person1", "Person2", "Person3", "Person4") , lty=1, col=c(
 
 
 
+#####
+#                                                       #
+#                                                       #
+#Part B: Superimposing FFMI/FMI chart for each individual
+#                                                       #
+#                                                       #
+
+#Parameter input:
+setwd("X:\\bhinton\\Ind Z Scores") # Set the working directory
+#Must use forward slash or double blackslash. a single backslash will not work in R
+Zind = read.csv("BF_Comb_Zind.csv")  # read csv file  BF = Black Female
+#Other options are: BF_Comb_Zind.csv  BM_Comb_Zind.csv   (Black male/female)
+#                   WF_Comb_Zind.csv  WM_Comb_Zind.csv  (White male/female)
+#                   HF_Comb_Zind.csv  HF_Comb_Zind.csv  (Hispanic/Mexican Male/female)
 
 
-#Test for superimposing the images
-#extra line
+selectAge = 15
+selectNumber = 4 #Don't change this currently, it won't work with ~=4
+#Currently code will only select the first selectNumber rows in the file
 
-setwd("X:\\bhinton\\Ind Z Scores")
-#Must use forward slash or double blackslash.... a single slash will not work
+ZindAges <- Zind[Zind[, "Age"] == selectAge,] 
+#Selects patients of certain age
 
-BF_Zind = read.csv("BF_Comb_Zind.csv")  # read csv file
-
-BF_Zind_15 <- BF_Zind[BF_Zind[, "Age"] == 15,]  #Selects only 15 yr olds?
-
-df_BF_Zind_15 <- data.frame(BF_Zind_15)
-df_BF_FMI_Zind_15 <- df_BF_Zind_15[1:4,c("Z_FMI_Tr","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")]
-df_BF_FFMI_Zind_15 <- df_BF_Zind_15[1:4,c("Z_FFMI_Tr","Z_FFMI_LA", "Z_FFMI_LL", "Z_FFMI_RL", "Z_FFMI_RA")]
+dfZindAges <- data.frame(ZindAges)  #Converts to dataframe
+dfZindAgesFmi <- dfZindAges[1:selectNumber,c("Z_FMI_Tr","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")]
+dfZindAgesFfmi <- dfZindAges[1:selectNumber,c("Z_FFMI_Tr","Z_FFMI_LA", "Z_FFMI_LL", "Z_FFMI_RL", "Z_FFMI_RA")]
 #1:4 selects the first 4 rows, the c and quotes selects certain columns
-fmiDat <- df_BF_FMI_Zind_15
-ffmiDat <- df_BF_FFMI_Zind_15
+fmiDat <- dfZindAgesFmi
+ffmiDat <- dfZindAgesFfmi
 
 
 colnames(fmiDat) <- c("Z_Tr", "Z_LA", "Z_LL", "Z_RL", "Z_RA")
@@ -91,6 +135,8 @@ maxmin1 <- data.frame(
   Z_LL=c(2, -2),
   Z_RL=c(2, -2),
   Z_RA=c(2, -2))
+
+
 
 ind1Dat <- rbind(maxmin,fmiDat[1,],ffmiDat[1,])
 ind2Dat <- rbind(maxmin,fmiDat[2,],ffmiDat[2,])
@@ -132,69 +178,11 @@ legend('topright', c("FMI", "FFMI") , lty=1, col=c("Black", "Red"), bty='n', cex
 
 
 
-radarchart(dat1, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
-           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),  title="4 Black Female FFMI Charts")
-#cex.lab doesnt do anything
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-#caxislabels=("-2","-1","0","1","2"),
-
-
-radarchart(dat, axistype=2, pcol=topo.colors(3), plty=1, pdensity=30, pfcol=topo.colors(3),
- title="(topo.colors, fill, axis=2)")
-
-
-
-
-
-
-
-
-
-# Data must be given as the data frame, where the first cases show maximum.
-maxmin <- data.frame(
- total=c(5, 1),
- phys=c(15, 3),
- psycho=c(3, 0),
- social=c(5, 1),
- env=c(5, 1))
-# data for radarchart function version 1 series, minimum value must be omitted from above.
-RNGkind("Mersenne-Twister")
-set.seed(123)
-dat <- data.frame(
- total=runif(3, 1, 5),
- phys=rnorm(3, 10, 2),
- psycho=c(0.5, NA, 3),
- social=runif(3, 1, 5),
- env=c(5, 2.5, 4))
-dat <- rbind(maxmin,dat)
-op <- par(mar=c(1, 2, 2, 1),mfrow=c(2, 2))
-radarchart(dat, axistype=1, seg=5, plty=1, vlabels=c("Total\nQOL", "Physical\naspects", 
- "Phychological\naspects", "Social\naspects", "Environmental\naspects"), 
- title="(axis=1, 5 segments, with specified vlabels)")
-radarchart(dat, axistype=2, pcol=topo.colors(3), plty=1, pdensity=30, pfcol=topo.colors(3),
- title="(topo.colors, fill, axis=2)")
-radarchart(dat, axistype=3, pty=32, plty=1, axislabcol="grey", na.itp=FALSE,
- title="(no points, axis=3, na.itp=FALSE)")
-radarchart(dat, axistype=1, plwd=1:5, pcol=1, centerzero=TRUE, 
- seg=4, caxislabels=c("worst", "", "", "", "best"),
- title="(use lty and lwd but b/w, axis=1,\n centerzero=TRUE, with centerlabels)")
-par(op)
-
-Test
 
 
 
