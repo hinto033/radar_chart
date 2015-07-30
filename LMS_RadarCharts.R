@@ -19,6 +19,72 @@
 #to select race/gender/etc all at once without uploading different files.
 
 
+
+#####
+#                                        #
+#                                        #
+#Part 0: Importing Sas data set and doing calcs
+#                                        #
+#                                        #
+
+
+library(sas7bdat)
+helpfromSAS = read.sas7bdat("http://www.math.smith.edu/sasr/datasets/help.sas7bdat")
+
+setwd("X:\\bhinton") # Set the working directory
+library(sas7bdat)
+nhanesFull = read.sas7bdat("dxa_bmx.sas7bdat")
+
+nhanes <- nhanesFull[,c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
+                               "DXXTRFAT", "DXXTRLI", "DXDTRPF",
+                               "DXXLAFAT", "DXXLALI", "DXDLAPF",
+                               "DXXLLFAT", "DXXLLLI", "DXDLLPF",
+                               "DXXRLFAT", "DXXRLLI", "DXDRLPF",
+                               "DXXRAFAT", "DXXRALI", "DXDRAPF",
+                               "DXDTOFAT", "DXDTOLI", "DXDTOPF"
+                              )]
+
+dfNhanes <- data.frame(nhanes)
+
+
+dfNhanesClean <- na.omit(dfNhanes)
+
+
+dfNhanesClean <- transform(dfNhanesClean, avgArmFat = (DXXLAFAT + DXXRAFAT) / 2, 
+                           avgLegFat = (DXXLLFAT + DXXRLFAT) / 2,
+                           avgArmLI = (DXXLALI + DXXRALI) / 2,
+                           avgLegLI = (DXXLLLI + DXXRLLI) / 2
+                           )
+
+#Fix these equations
+dfNhanesClean <- transform(dfNhanesClean, avgArmFmi = avgArmFat / (BMXHT/100)^2, 
+                           avgLegFmi = (avgLegFat) / 2,
+                           trunkFmi = (DXXTRFAT) / 2,
+                           leftArmFmi = (DXXLAFAT) / 2,
+                           leftLegFmi = (DXXLLFAT) / 2,
+                           rightLegFmi = (DXXRLFAT) / 2,
+                           rightArmFmi = (DXXRAFAT) / 2)
+
+dfNhanesClean <- transform(dfNhanesClean, avgArmLmi = avgArmLI / (BMXHT/100)^2, 
+                           avgLegLmi = (avgLegLI) / 2,
+                           trunkLmi = (DXXTRLI) / 2,
+                           leftArmLmi = (DXXLALI) / 2,
+                           leftLegLmi = (DXXLLLI) / 2,
+                           rightLegLmi = (DXXRLLI) / 2,
+                           rightArmLmi = (DXXRALI) / 2)
+
+
+
+nhanesBlack <- dfNhanesClean[dfNhanesClean[, "Race"] == "Non-Hispanic Black",] 
+nhanesWhite <- dfNhanesClean[dfNhanesClean[, "Race"] == "Non-Hispanic White",] 
+nhanesHisp <- subset(dfNhanesClean, dfNhanesClean$Race=="Mexican American" | dfNhanesClean$Race=="Other Hispanic")
+
+
+#write.csv(test, file = "dxa_bmx.csv")
+#If I want to write the whole database
+
+
+
 #####
 #                                        #
 #                                        #
@@ -84,9 +150,6 @@ radarchart(ffmiDatFinal, axistype=3, seg=4, cex.main=1, plty=1, plwd=2,
 
 legend('topright', c("Person1", "Person2", "Person3", "Person4") , lty=1, col=c("Black", "Red","Green","Blue"), bty='n', cex=1)    
 # gives the legend appropriate symbols (lines)
-
-
-
 #####
 #                                                       #
 #                                                       #
