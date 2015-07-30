@@ -73,11 +73,29 @@ dfNhanesClean <- transform(dfNhanesClean, avgArmLmi = avgArmLI / (BMXHT/100)^2,
                            rightLegLmi = (DXXRLLI) / 2,
                            rightArmLmi = (DXXRALI) / 2)
 
-
+dfNhanesCleanFmiLmi <- dfNhanesClean[,c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
+                                      "avgArmFmi", "avgLegFmi", "trunkFmi",
+                                      "leftArmFmi", "leftLegFmi",
+                                      "rightLegFmi", "rightArmFmi",
+                                      "avgArmLmi", "avgLegLmi", "trunkLmi",
+                                      "leftArmLmi", "leftLegLmi",
+                                      "rightLegLmi", "rightArmLmi")]
 
 nhanesBlack <- dfNhanesClean[dfNhanesClean[, "Race"] == "Non-Hispanic Black",] 
 nhanesWhite <- dfNhanesClean[dfNhanesClean[, "Race"] == "Non-Hispanic White",] 
 nhanesHisp <- subset(dfNhanesClean, dfNhanesClean$Race=="Mexican American" | dfNhanesClean$Race=="Other Hispanic")
+
+nhanesBlackFmiLmi <- dfNhanesCleanFmiLmi[dfNhanesCleanFmiLmi[, "Race"] == "Non-Hispanic Black",] 
+nhanesWhiteFmiLmi <- dfNhanesCleanFmiLmi[dfNhanesCleanFmiLmi[, "Race"] == "Non-Hispanic White",] 
+nhanesHispFmiLmi <- subset(dfNhanesCleanFmiLmi, dfNhanesCleanFmiLmi$Race=="Mexican American" | dfNhanesCleanFmiLmi$Race=="Other Hispanic")
+#This contains just the information needed to produce LMS charts  
+#Tomorrow export this to CSV
+
+write.csv(nhanesBlackFmiLmi, file = "BlackFmiLmi.csv")
+write.csv(nhanesWhiteFmiLmi, file = "WhiteFmiLmi.csv")
+write.csv(nhanesHispFmiLmi, file = "HispFmiLmi.csv")
+
+
 
 
 #write.csv(test, file = "dxa_bmx.csv")
