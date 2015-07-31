@@ -3,7 +3,8 @@
 #It requires a certain number of inputs at the beginning to function properly
 
 #Required Packages: fmsb (Contains radar function)
-#must load and install the package in order for the code to run
+#                   sas7bdat (Allows to import sas files)
+#must load and install the packages in order for the code to run
 
 
 
@@ -26,10 +27,6 @@
 #Part 0: Importing Sas data set and doing calcs
 #                                        #
 #                                        #
-
-
-library(sas7bdat)
-helpfromSAS = read.sas7bdat("http://www.math.smith.edu/sasr/datasets/help.sas7bdat")
 
 setwd("X:\\bhinton") # Set the working directory
 library(sas7bdat)
@@ -57,21 +54,21 @@ dfNhanesClean <- transform(dfNhanesClean, avgArmFat = (DXXLAFAT + DXXRAFAT) / 2,
                            )
 
 #Fix these equations
-dfNhanesClean <- transform(dfNhanesClean, avgArmFmi = avgArmFat / (BMXHT/100)^2, 
-                           avgLegFmi = (avgLegFat) / 2,
-                           trunkFmi = (DXXTRFAT) / 2,
-                           leftArmFmi = (DXXLAFAT) / 2,
-                           leftLegFmi = (DXXLLFAT) / 2,
-                           rightLegFmi = (DXXRLFAT) / 2,
-                           rightArmFmi = (DXXRAFAT) / 2)
+dfNhanesClean <- transform(dfNhanesClean, avgArmFmi = (avgArmFat/1000) / ((BMXHT/100)^2), 
+                           avgLegFmi = (avgLegFat/1000) / ((BMXHT/100)^2),
+                           trunkFmi = (DXXTRFAT/1000) / ((BMXHT/100)^2),
+                           leftArmFmi = (DXXLAFAT/1000) / ((BMXHT/100)^2),
+                           leftLegFmi = (DXXLLFAT/1000) / ((BMXHT/100)^2),
+                           rightLegFmi = (DXXRLFAT/1000) / ((BMXHT/100)^2),
+                           rightArmFmi = (DXXRAFAT/1000) / ((BMXHT/100)^2))
 
-dfNhanesClean <- transform(dfNhanesClean, avgArmLmi = avgArmLI / (BMXHT/100)^2, 
-                           avgLegLmi = (avgLegLI) / 2,
-                           trunkLmi = (DXXTRLI) / 2,
-                           leftArmLmi = (DXXLALI) / 2,
-                           leftLegLmi = (DXXLLLI) / 2,
-                           rightLegLmi = (DXXRLLI) / 2,
-                           rightArmLmi = (DXXRALI) / 2)
+dfNhanesClean <- transform(dfNhanesClean, avgArmLmi = (avgArmLI/1000) / ((BMXHT/100)^2), 
+                           avgLegLmi = (avgLegLI/1000) / ((BMXHT/100)^2),
+                           trunkLmi = (DXXTRLI/1000) / ((BMXHT/100)^2),
+                           leftArmLmi = (DXXLALI/1000) / ((BMXHT/100)^2),
+                           leftLegLmi = (DXXLLLI/1000) / ((BMXHT/100)^2),
+                           rightLegLmi = (DXXRLLI/1000) / ((BMXHT/100)^2),
+                           rightArmLmi = (DXXRALI/1000) / ((BMXHT/100)^2))
 
 dfNhanesCleanFmiLmi <- dfNhanesClean[,c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
                                       "avgArmFmi", "avgLegFmi", "trunkFmi",
@@ -100,6 +97,114 @@ write.csv(nhanesHispFmiLmi, file = "HispFmiLmi.csv")
 
 #write.csv(test, file = "dxa_bmx.csv")
 #If I want to write the whole database
+
+#####
+#                                        #
+#                                        #
+#Part B: Importing Individual Z scores (And maybe calculating values?)
+#                                        #
+#                                        #
+
+
+#Need to think through how this will work with each arm and each leg.
+#Will probably need to calculate z scores from the LMS values provided for the average.
+#... trunk should be fairly straightforward though.
+
+setwd("X:\\bhinton\\Data\\LMS Tables\\Zind") # Set the working directory
+bfLegFMI <- read.table("BlackFmiLmi_Female_AvgLegFMI_Zind_020302t.txt", header=T, sep="\t")
+bmLegFMI <- read.table("BlackFmiLmi_Male_AvgLegFMI_Zind_020202t.txt", header=T, sep="\t")
+
+dbfLegFMI <- data.frame(bfLegFMI)
+dbfLegFMI <- transform(dbfLegFMI, zTot = (DXXLAFAT + DXXRAFAT) / 2, 
+                           avgLegFat = (DXXLLFAT + DXXRLFAT) / 2,
+                           avgArmLI = (DXXLALI + DXXRALI) / 2,
+                           avgLegLI = (DXXLLLI + DXXRLLI) / 2
+)
+
+setwd("X:\bhinton\Data\LMS Tables\LMS Values")
+#Various Files to work with.....
+BlackFmiLmi_Female_AvgArmFMI_Zind_020202t.txt
+BlackFmiLmi_Female_AvgArmLMI_Zind_010401t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Female_AvgLegFMI_Zind_020302t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Female_AvgLegLMI_Zind_010401t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Female_TrunkFMI_Zind_020402t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Male_TrunkLMI_Zind_020702t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Female_TrunkLMI_Zind_010401t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Male_AvgArmFMI_Zind_020202t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Male_AvgArmLMI_020601t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Male_AvgLegFMI_Zind_020202t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Male_AvgLegLMI_Zind_010501t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Male_TrunkFMI_Zind_020401t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Male_TrunkLMI_Zind_010601t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Female_AvgArmFMI_Zind_020302t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Female_AvgArmLMI_Zind_020401t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Female_AvgLegFMI_Zind_020301t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Female_AvgLegLMI_Zind_020401t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Female_TrunkFMI_Zind_020402t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Female_TrunkLMI_Zind_020401t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Male_AvgArmFMI_Zind_010403t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Male_AvgArmLMI_Zind_010702t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Male_AvglegFMI_Zind_010102t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Male_AvgLegLMI_Zind_010602t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Male_TrunkFMI_Zind_020502t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Male_TrunkLMI_Zind_010702t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Female_AvgArmFMI_Zind_020202t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Female_AvgArmLMI_Zind_010401t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Female_AvgLegFMI_Zind_020301t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Female_AvgLegLMI_Zind_010601t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Female_TrunkFMI_Zind_020402t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Female_TrunkLMI_Zind_010401t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Male_AvgArmFMI_Zind_020402t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Male_AvgArmLMI_Zind_010801t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Male_AvgLegFMI_Zind_010202t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Male_AvgLegLMI_Zind_020702t.txt
+file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Male_TrunkFMI_Zind_020502t.txt
+
+
+
+file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Male_TrunkLMI_020702t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Female_AvgArmFMI_020202t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Female_AvgArmLMI_010401t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Female_AvgLegFMI_020302t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Female_AvgLegLMI_010401t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Female_TrunkFMI_020402t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Female_TrunkLMI_010401t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Male_AvgArmFMI_020202t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Male_AvgArmLMI_020601t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Male_AvgLegFMI_020202t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Male_AvgLegLMI_010501t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Male_TrunkFMI_020401t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Male_TrunkLMI_010601t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Female_AveLegLMI_020401t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Female_AvgArmFMI_020302t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Female_AvgArmLMI_020401t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Female_AvgLegFMI_020301t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Female_TrunkFMI_020402t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Female_TrunkLMI_020401t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male__AvgLegFMI_010102t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male_AvgArmFMI_010403t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male_AvgArmLMI_010702t.ept
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male_AvgArmLMI_010702t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male_AvgLegLMI_010602t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male_TrunkFMI_020502t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male_TrunkLMI_010702t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Female_AvgArmFMI_020202t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Female_AvgArmLMI_010401t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Female_AvgLegFMI_020301t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Female_AvgLegLMI_010601t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Female_TrunkFMI_020402t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Female_TrunkLMI_010401t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Male_AvgArmFMI_020402t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Male_AvgArmLMI_010801t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Male_AvgLagLMI_020702t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Male_AvgLegFMI_010202t.txt
+file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Male_TrunkFMI_020502t.txt
+
+
+
+
+
+
 
 
 
@@ -143,15 +248,8 @@ maxmin <- data.frame(
   Z_RL=c(2, -2),
   Z_RA=c(2, -2))
 
-maxmin1 <- data.frame(
-  Z_Tr=c(2, -2),
-  Z_LA=c(2, -2),
-  Z_LL=c(2, -2),
-  Z_RL=c(2, -2),
-  Z_RA=c(2, -2))
-
 fmiDatFinal <- rbind(maxmin,fmiDat)
-ffmiDatFinal <- rbind(maxmin1,ffmiDat)
+ffmiDatFinal <- rbind(maxmin,ffmiDat)
 
 op <- par(mar=c(1, 2, 2, 1),mfrow=c(1, 2))
 #mfrow: 1st  number is no. rows, 2nd is no. columns.
@@ -210,21 +308,10 @@ maxmin <- data.frame(
   Z_RL=c(2, -2),
   Z_RA=c(2, -2))
 
-maxmin1 <- data.frame(
-  Z_Tr=c(2, -2),
-  Z_LA=c(2, -2),
-  Z_LL=c(2, -2),
-  Z_RL=c(2, -2),
-  Z_RA=c(2, -2))
-
-
-
 ind1Dat <- rbind(maxmin,fmiDat[1,],ffmiDat[1,])
 ind2Dat <- rbind(maxmin,fmiDat[2,],ffmiDat[2,])
 ind3Dat <- rbind(maxmin,fmiDat[3,],ffmiDat[3,])
 ind4Dat <- rbind(maxmin,fmiDat[4,],ffmiDat[4,])
-
-
 
 op <- par(mar=c(1, 2, 2, 1),mfrow=c(2, 2))
 
