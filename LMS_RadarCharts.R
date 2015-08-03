@@ -88,9 +88,9 @@ nhanesHispFmiLmi <- subset(dfNhanesCleanFmiLmi, dfNhanesCleanFmiLmi$Race=="Mexic
 #This contains just the information needed to produce LMS charts  
 #Tomorrow export this to CSV
 
-write.csv(nhanesBlackFmiLmi, file = "BlackFmiLmi.csv")
-write.csv(nhanesWhiteFmiLmi, file = "WhiteFmiLmi.csv")
-write.csv(nhanesHispFmiLmi, file = "HispFmiLmi.csv")
+#write.csv(nhanesBlackFmiLmi, file = "BlackFmiLmi.csv")
+#write.csv(nhanesWhiteFmiLmi, file = "WhiteFmiLmi.csv")
+#write.csv(nhanesHispFmiLmi, file = "HispFmiLmi.csv")
 
 
 
@@ -101,7 +101,7 @@ write.csv(nhanesHispFmiLmi, file = "HispFmiLmi.csv")
 #####
 #                                        #
 #                                        #
-#Part B: Importing Individual Z scores (And maybe calculating values?)
+#Part 1: Importing Individual Z scores (And maybe calculating values?)
 #                                        #
 #                                        #
 
@@ -110,101 +110,231 @@ write.csv(nhanesHispFmiLmi, file = "HispFmiLmi.csv")
 #Will probably need to calculate z scores from the LMS values provided for the average.
 #... trunk should be fairly straightforward though.
 
+
+keeps <- c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR", "trunkFmi", "trunkLmi", "leftArmFmi",
+           "leftArmLmi", "rightArmFmi", "rightArmLmi", "leftLegFmi", "leftLegLmi",
+           "rightLegFmi", "rightLegLmi")
+nhBlack <- nhanesBlackFmiLmi[keeps]
+nhHisp <- nhanesHispFmiLmi[keeps]
+nhWhite <- nhanesWhiteFmiLmi[keeps]
 setwd("X:\\bhinton\\Data\\LMS Tables\\Zind") # Set the working directory
-bfLegFMI <- read.table("BlackFmiLmi_Female_AvgLegFMI_Zind_020302t.txt", header=T, sep="\t")
-bmLegFMI <- read.table("BlackFmiLmi_Male_AvgLegFMI_Zind_020202t.txt", header=T, sep="\t")
-
-dbfLegFMI <- data.frame(bfLegFMI)
-dbfLegFMI <- transform(dbfLegFMI, zTot = (DXXLAFAT + DXXRAFAT) / 2, 
-                           avgLegFat = (DXXLLFAT + DXXRLFAT) / 2,
-                           avgArmLI = (DXXLALI + DXXRALI) / 2,
-                           avgLegLI = (DXXLLLI + DXXRLLI) / 2
-)
-
-setwd("X:\bhinton\Data\LMS Tables\LMS Values")
-#Various Files to work with.....
-BlackFmiLmi_Female_AvgArmFMI_Zind_020202t.txt
-BlackFmiLmi_Female_AvgArmLMI_Zind_010401t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Female_AvgLegFMI_Zind_020302t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Female_AvgLegLMI_Zind_010401t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Female_TrunkFMI_Zind_020402t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Male_TrunkLMI_Zind_020702t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Female_TrunkLMI_Zind_010401t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Male_AvgArmFMI_Zind_020202t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Male_AvgArmLMI_020601t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Male_AvgLegFMI_Zind_020202t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Male_AvgLegLMI_Zind_010501t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Male_TrunkFMI_Zind_020401t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/BlackFmiLmi_Male_TrunkLMI_Zind_010601t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Female_AvgArmFMI_Zind_020302t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Female_AvgArmLMI_Zind_020401t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Female_AvgLegFMI_Zind_020301t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Female_AvgLegLMI_Zind_020401t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Female_TrunkFMI_Zind_020402t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Female_TrunkLMI_Zind_020401t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Male_AvgArmFMI_Zind_010403t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Male_AvgArmLMI_Zind_010702t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Male_AvglegFMI_Zind_010102t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Male_AvgLegLMI_Zind_010602t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Male_TrunkFMI_Zind_020502t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/HispFmiLmi_Male_TrunkLMI_Zind_010702t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Female_AvgArmFMI_Zind_020202t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Female_AvgArmLMI_Zind_010401t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Female_AvgLegFMI_Zind_020301t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Female_AvgLegLMI_Zind_010601t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Female_TrunkFMI_Zind_020402t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Female_TrunkLMI_Zind_010401t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Male_AvgArmFMI_Zind_020402t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Male_AvgArmLMI_Zind_010801t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Male_AvgLegFMI_Zind_010202t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Male_AvgLegLMI_Zind_020702t.txt
-file:///X:/bhinton/Data/LMS Tables/Zind/WhiteFmiLmi_Male_TrunkFMI_Zind_020502t.txt
 
 
+bfTrunkFmiz <- read.table("BlackFmiLmi_Female_TrunkFMI_Zind_020402t.txt", header=T, sep="\t")
+bmTrunkFmiz <- read.table("BlackFmiLmi_Male_TrunkFMI_Zind_020401t.txt", header=T, sep="\t")
+bfTrunkLmiz <- read.table("BlackFmiLmi_Female_TrunkLMI_Zind_010401t.txt", header=T, sep="\t")
+bmTrunkLmiz <- read.table("BlackFmiLmi_Male_TrunkLMI_Zind_010601t.txt", header=T, sep="\t")
 
-file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Male_TrunkLMI_020702t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Female_AvgArmFMI_020202t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Female_AvgArmLMI_010401t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Female_AvgLegFMI_020302t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Female_AvgLegLMI_010401t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Female_TrunkFMI_020402t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Female_TrunkLMI_010401t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Male_AvgArmFMI_020202t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Male_AvgArmLMI_020601t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Male_AvgLegFMI_020202t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Male_AvgLegLMI_010501t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Male_TrunkFMI_020401t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/BlackFmiLmi_Male_TrunkLMI_010601t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Female_AveLegLMI_020401t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Female_AvgArmFMI_020302t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Female_AvgArmLMI_020401t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Female_AvgLegFMI_020301t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Female_TrunkFMI_020402t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Female_TrunkLMI_020401t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male__AvgLegFMI_010102t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male_AvgArmFMI_010403t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male_AvgArmLMI_010702t.ept
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male_AvgArmLMI_010702t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male_AvgLegLMI_010602t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male_TrunkFMI_020502t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/HispFmiLmi_Male_TrunkLMI_010702t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Female_AvgArmFMI_020202t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Female_AvgArmLMI_010401t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Female_AvgLegFMI_020301t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Female_AvgLegLMI_010601t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Female_TrunkFMI_020402t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Female_TrunkLMI_010401t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Male_AvgArmFMI_020402t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Male_AvgArmLMI_010801t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Male_AvgLagLMI_020702t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Male_AvgLegFMI_010202t.txt
-file:///X:/bhinton/Data/LMS Tables/LMS Values/WhiteFmiLmi_Male_TrunkFMI_020502t.txt
+bfArmFmiz <- read.table("BlackFmiLmi_Female_AvgArmFMI_Zind_020202t.txt", header=T, sep="\t")
+bmArmFmiz <- read.table("BlackFmiLmi_Male_AvgArmFMI_Zind_020202t.txt", header=T, sep="\t")
+bfArmLmiz <- read.table("BlackFmiLmi_Female_AvgArmLMI_Zind_010401t.txt", header=T, sep="\t")
+bmArmLmiz <- read.table("BlackFmiLmi_Male_AvgArmLMI_020601t.txt", header=T, sep="\t")
+
+bfLegFmiz <- read.table("BlackFmiLmi_Female_AvgLegFMI_Zind_020302t.txt", header=T, sep="\t")
+bmLegFmiz <- read.table("BlackFmiLmi_Male_AvgLegFMI_Zind_020202t.txt", header=T, sep="\t")
+bfLegLmiz <- read.table("BlackFmiLmi_Female_AvgLegLMI_Zind_010401t.txt", header=T, sep="\t")
+bmLegLmiz <- read.table("BlackFmiLmi_Male_AvgLegLMI_Zind_010501t.txt", header=T, sep="\t")
+
+CombBlackZ <- cbind(bfTrunkFmiz, bmTrunkFmiz, bfTrunkLmiz, bmTrunkLmiz, bfArmFmiz, bmArmFmiz, 
+                    bfArmLmiz, bmArmLmiz, bfLegFmiz, bmLegFmiz, bfLegLmiz, bmLegLmiz)
+
+dCombBlackZ <- data.frame(CombBlackZ)
+
+keeps <- c(1, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36)
+dCombBlackZ2 <- dCombBlackZ[keeps]
+
+colnames(dCombBlackZ2) <- c("Age", "ZFTrunkFmi", "ZMTrunkFmi", "ZFTrunkLmi", "ZMTrunkLmi",
+                            "ZFArmFmi", "ZMArmFmi", "ZFArmLmi", "ZMArmLmi",
+                            "ZFLegFmi", "ZMLegFmi", "ZFLegLmi", "ZMLegLmi")
+
+
+dCombBlackZ2 <- as.data.frame(sapply(dCombBlackZ2,sub,pattern='\\*',replacement=NA))
+
+
+unfactorize<-c("Age", "ZFTrunkFmi", "ZMTrunkFmi", "ZFTrunkLmi", "ZMTrunkLmi",
+               "ZFArmFmi", "ZMArmFmi", "ZFArmLmi", "ZMArmLmi",
+               "ZFLegFmi", "ZMLegFmi", "ZFLegLmi", "ZMLegLmi")
+dCombBlackZ2[,unfactorize] <- as.numeric(as.character(unlist(dCombBlackZ2[,unfactorize])))
+dCombBlackZ2 <- transform(dCombBlackZ2, ZFTrunkFmi= pmax(ZFTrunkFmi, ZMTrunkFmi, na.rm=TRUE), 
+                          ZFTrunkLmi= pmax(ZFTrunkLmi, ZMTrunkLmi, na.rm=TRUE), 
+                          ZFArmFmi= pmax(ZFArmFmi, ZMArmFmi, na.rm=TRUE), 
+                          ZFArmLmi= pmax(ZFArmLmi, ZMArmLmi, na.rm=TRUE),
+                          ZFLegFmi= pmax(ZFLegFmi, ZMLegFmi, na.rm=TRUE),
+                          ZFLegLmi= pmax(ZFLegLmi, ZMLegLmi, na.rm=TRUE))
+
+dCombBlackZ2$Gender1[is.na(dCombBlackZ2$ZMTrunkFmi)] <- "Female"
+dCombBlackZ2$Gender1[!is.na(dCombBlackZ2$ZMTrunkFmi)] <- "Male"
+
+keeps <- c("Age","ZFTrunkFmi", "ZFTrunkLmi","ZFArmFmi","ZFArmLmi","ZFLegFmi","ZFLegLmi","Gender1")
+dCombBlackZ3 <- dCombBlackZ2[keeps]
+
+BlackEnd <- cbind(nhBlack, dCombBlackZ3)
+#colnames(res2) <- c("Age", "Measure", "Z", "Gender")
+
+
+##Hispanic##
 
 
 
+hfTrunkFmiz <- read.table("HispFmiLmi_Female_TrunkFMI_Zind_020402t.txt", header=T, sep="\t")
+hmTrunkFmiz <- read.table("HispFmiLmi_Male_TrunkFMI_Zind_020502t.txt", header=T, sep="\t")
+hfTrunkLmiz <- read.table("HispFmiLmi_Female_TrunkLMI_Zind_020401t.txt", header=T, sep="\t")
+hmTrunkLmiz <- read.table("HispFmiLmi_Male_TrunkLMI_Zind_010702t.txt", header=T, sep="\t")
+
+hfArmFmiz <- read.table("HispFmiLmi_Female_AvgArmFMI_Zind_020302t.txt", header=T, sep="\t")
+hmArmFmiz <- read.table("HispFmiLmi_Male_AvgArmFMI_Zind_010403t.txt", header=T, sep="\t")
+hfArmLmiz <- read.table("HispFmiLmi_Female_AvgArmLMI_Zind_020401t.txt", header=T, sep="\t")
+hmArmLmiz <- read.table("HispFmiLmi_Male_AvgArmLMI_Zind_010702t.txt", header=T, sep="\t")
+
+hfLegFmiz <- read.table("HispFmiLmi_Female_AvgLegFMI_Zind_020301t.txt", header=T, sep="\t")
+hmLegFmiz <- read.table("HispFmiLmi_Male_AvglegFMI_Zind_010102t.txt", header=T, sep="\t")
+hfLegLmiz <- read.table("HispFmiLmi_Female_AvgLegLMI_Zind_020401t.txt", header=T, sep="\t")
+hmLegLmiz <- read.table("HispFmiLmi_Male_AvgLegLMI_Zind_010602t.txt", header=T, sep="\t")
+
+CombHispZ <- cbind(hfTrunkFmiz, hmTrunkFmiz, hfTrunkLmiz, hmTrunkLmiz, hfArmFmiz, hmArmFmiz, 
+                    hfArmLmiz, hmArmLmiz, hfLegFmiz, hmLegFmiz, hfLegLmiz, hmLegLmiz)
+
+dCombHispZ <- data.frame(CombHispZ)
+
+keeps <- c(1, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36)
+dCombHispZ2 <- dCombHispZ[keeps]
+
+colnames(dCombHispZ2) <- c("Age", "ZFTrunkFmi", "ZMTrunkFmi", "ZFTrunkLmi", "ZMTrunkLmi",
+                            "ZFArmFmi", "ZMArmFmi", "ZFArmLmi", "ZMArmLmi",
+                            "ZFLegFmi", "ZMLegFmi", "ZFLegLmi", "ZMLegLmi")
+
+
+dCombHispZ2 <- as.data.frame(sapply(dCombHispZ2,sub,pattern='\\*',replacement=NA))
+
+
+unfactorize<-c("Age", "ZFTrunkFmi", "ZMTrunkFmi", "ZFTrunkLmi", "ZMTrunkLmi",
+               "ZFArmFmi", "ZMArmFmi", "ZFArmLmi", "ZMArmLmi",
+               "ZFLegFmi", "ZMLegFmi", "ZFLegLmi", "ZMLegLmi")
+dCombHispZ2[,unfactorize] <- as.numeric(as.character(unlist(dCombHispZ2[,unfactorize])))
+dCombHispZ2 <- transform(dCombHispZ2, ZFTrunkFmi= pmax(ZFTrunkFmi, ZMTrunkFmi, na.rm=TRUE), 
+                          ZFTrunkLmi= pmax(ZFTrunkLmi, ZMTrunkLmi, na.rm=TRUE), 
+                          ZFArmFmi= pmax(ZFArmFmi, ZMArmFmi, na.rm=TRUE), 
+                          ZFArmLmi= pmax(ZFArmLmi, ZMArmLmi, na.rm=TRUE),
+                          ZFLegFmi= pmax(ZFLegFmi, ZMLegFmi, na.rm=TRUE),
+                          ZFLegLmi= pmax(ZFLegLmi, ZMLegLmi, na.rm=TRUE))
+
+dCombHispZ2$Gender1[is.na(dCombHispZ2$ZMTrunkFmi)] <- "Female"
+dCombHispZ2$Gender1[!is.na(dCombHispZ2$ZMTrunkFmi)] <- "Male"
+
+keeps <- c("Age","ZFTrunkFmi", "ZFTrunkLmi","ZFArmFmi","ZFArmLmi","ZFLegFmi","ZFLegLmi","Gender1")
+dCombHispZ3 <- dCombHispZ2[keeps]
+
+HispEnd <- cbind(nhHisp, dCombHispZ3)
+#colnames(res2) <- c("Age", "Measure", "Z", "Gender")
 
 
 
+##White##
+wfTrunkFmiz <- read.table("WhiteFmiLmi_Female_TrunkFMI_Zind_020402t.txt", header=T, sep="\t")
+wmTrunkFmiz <- read.table("WhiteFmiLmi_Male_TrunkFMI_Zind_020502t.txt", header=T, sep="\t")
+wfTrunkLmiz <- read.table("WhiteFmiLmi_Female_TrunkLMI_Zind_010401t.txt", header=T, sep="\t")
+wmTrunkLmiz <- read.table("WhiteFmiLmi_Male_TrunkLMI_Zind_020702t.txt", header=T, sep="\t")
+
+wfArmFmiz <- read.table("WhiteFmiLmi_Female_AvgArmFMI_Zind_020202t.txt", header=T, sep="\t")
+wmArmFmiz <- read.table("WhiteFmiLmi_Male_AvgArmFMI_Zind_020402t.txt", header=T, sep="\t")
+wfArmLmiz <- read.table("WhiteFmiLmi_Female_AvgArmLMI_Zind_010401t.txt", header=T, sep="\t")
+wmArmLmiz <- read.table("WhiteFmiLmi_Male_AvgArmLMI_Zind_010801t.txt", header=T, sep="\t")
+
+wfLegFmiz <- read.table("WhiteFmiLmi_Female_AvgLegFMI_Zind_020301t.txt", header=T, sep="\t")
+wmLegFmiz <- read.table("WhiteFmiLmi_Male_AvgLegFMI_Zind_010202t.txt", header=T, sep="\t")
+wfLegLmiz <- read.table("WhiteFmiLmi_Female_AvgLegLMI_Zind_010601t.txt", header=T, sep="\t")
+wmLegLmiz <- read.table("WhiteFmiLmi_Male_AvgLegLMI_Zind_020702t.txt", header=T, sep="\t")
+
+
+CombWhiteZ <- cbind(wfTrunkFmiz, wmTrunkFmiz, wfTrunkLmiz, wmTrunkLmiz, wfArmFmiz, wmArmFmiz, 
+                    wfArmLmiz, wmArmLmiz, wfLegFmiz, wmLegFmiz, wfLegLmiz, wmLegLmiz)
+
+dCombWhiteZ <- data.frame(CombWhiteZ)
+
+keeps <- c(1, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36)
+dCombWhiteZ2 <- dCombWhiteZ[keeps]
+
+colnames(dCombWhiteZ2) <- c("Age", "ZFTrunkFmi", "ZMTrunkFmi", "ZFTrunkLmi", "ZMTrunkLmi",
+                            "ZFArmFmi", "ZMArmFmi", "ZFArmLmi", "ZMArmLmi",
+                            "ZFLegFmi", "ZMLegFmi", "ZFLegLmi", "ZMLegLmi")
+
+
+dCombWhiteZ2 <- as.data.frame(sapply(dCombWhiteZ2,sub,pattern='\\*',replacement=NA))
+
+
+unfactorize<-c("Age", "ZFTrunkFmi", "ZMTrunkFmi", "ZFTrunkLmi", "ZMTrunkLmi",
+               "ZFArmFmi", "ZMArmFmi", "ZFArmLmi", "ZMArmLmi",
+               "ZFLegFmi", "ZMLegFmi", "ZFLegLmi", "ZMLegLmi")
+dCombWhiteZ2[,unfactorize] <- as.numeric(as.character(unlist(dCombWhiteZ2[,unfactorize])))
+dCombWhiteZ2 <- transform(dCombWhiteZ2, ZFTrunkFmi= pmax(ZFTrunkFmi, ZMTrunkFmi, na.rm=TRUE), 
+                          ZFTrunkLmi= pmax(ZFTrunkLmi, ZMTrunkLmi, na.rm=TRUE), 
+                          ZFArmFmi= pmax(ZFArmFmi, ZMArmFmi, na.rm=TRUE), 
+                          ZFArmLmi= pmax(ZFArmLmi, ZMArmLmi, na.rm=TRUE),
+                          ZFLegFmi= pmax(ZFLegFmi, ZMLegFmi, na.rm=TRUE),
+                          ZFLegLmi= pmax(ZFLegLmi, ZMLegLmi, na.rm=TRUE))
+
+dCombWhiteZ2$Gender1[is.na(dCombWhiteZ2$ZMTrunkFmi)] <- "Female"
+dCombWhiteZ2$Gender1[!is.na(dCombWhiteZ2$ZMTrunkFmi)] <- "Male"
+
+keeps <- c("Age","ZFTrunkFmi", "ZFTrunkLmi","ZFArmFmi","ZFArmLmi","ZFLegFmi","ZFLegLmi","Gender1")
+dCombWhiteZ3 <- dCombWhiteZ2[keeps]
+
+WhiteEnd <- cbind(nhWhite, dCombWhiteZ3)
+#colnames(res2) <- c("Age", "Measure", "Z", "Gender")
+
+
+
+
+#####
+#                                        #
+#                                        #
+#Part 2: Importing LMS Z scores (And maybe calculating values?)
+#                                        #
+#                                        #
+
+setwd("X:\\bhinton\\Data\\LMS Tables\\LMS Values")
+
+
+dat2 <- read.table("BlackFmiLmi_Female_AvgArmFMI_020202t.txt",  skip=10, header =TRUE, sep ="\t")
+
+
+test1 <- read.table("BlackFmiLmi_Female_AvgArmFMI_020202t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("BlackFmiLmi_Female_AvgArmLMI_010401t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("BlackFmiLmi_Female_AvgLegFMI_020302t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("BlackFmiLmi_Female_AvgLegLMI_010401t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("BlackFmiLmi_Male_AvgArmFMI_020202t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("BlackFmiLmi_Male_AvgArmLMI_020601t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("BlackFmiLmi_Male_AvgLegFMI_020202t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("BlackFmiLmi_Male_AvgLegLMI_010501t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("HispFmiLmi_Female_AveLegLMI_020401t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("HispFmiLmi_Female_AvgArmFMI_020302t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("HispFmiLmi_Female_AvgArmLMI_020401t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("HispFmiLmi_Female_AvgLegFMI_020301t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("HispFmiLmi_Male__AvgLegFMI_010102t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("HispFmiLmi_Male_AvgArmFMI_010403t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("HispFmiLmi_Male_AvgArmLMI_010702t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("HispFmiLmi_Male_AvgLegLMI_010602t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("WhiteFmiLmi_Female_AvgArmFMI_020202t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("WhiteFmiLmi_Female_AvgArmLMI_010401t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("WhiteFmiLmi_Female_AvgLegFMI_020301t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("WhiteFmiLmi_Female_AvgLegLMI_010601t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("WhiteFmiLmi_Male_AvgArmFMI_020402t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("WhiteFmiLmi_Male_AvgArmLMI_010801t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("WhiteFmiLmi_Male_AvgLagLMI_020702t.txt", header=T, skip=10, sep="\t")
+bfTrunkFmiLms <- read.table("WhiteFmiLmi_Male_AvgLegFMI_010202t.txt", header=T, skip=10, sep="\t")
+
+#bfTrunkFmiLms <- read.table(BlackFmiLmi_Female_TrunkFMI_020402t.txt, header=T, sep="\t")
+#bfTrunkFmiLms <- read.table(BlackFmiLmi_Female_TrunkLMI_010401t.txt, header=T, sep="\t")
+#bfTrunkFmiLms <- read.table(BlackFmiLmi_Male_TrunkFMI_020401t.txt, header=T, sep="\t")
+#bfTrunkFmiLms <- read.table(BlackFmiLmi_Male_TrunkLMI_010601t.txt, header=T, sep="\t")
+#bfTrunkFmiLms <- read.table(HispFmiLmi_Female_TrunkFMI_020402t.txt, header=T, sep="\t")
+#bfTrunkFmiLms <- read.table(HispFmiLmi_Female_TrunkLMI_020401t.txt, header=T, sep="\t")
+#bfTrunkFmiLms <- read.table(HispFmiLmi_Male_TrunkFMI_020502t.txt, header=T, sep="\t")
+#bfTrunkFmiLms <- read.table(HispFmiLmi_Male_TrunkLMI_010702t.txt, header=T, sep="\t")
+#bfTrunkFmiLms <- read.table(WhiteFmiLmi_Female_TrunkFMI_020402t.txt, header=T, sep="\t")
+#bfTrunkFmiLms <- read.table(WhiteFmiLmi_Female_TrunkLMI_010401t.txt, header=T, sep="\t")
+#bfTrunkFmiLms <- read.table(WhiteFmiLmi_Male_TrunkFMI_020502t.txt, header=T, sep="\t")
+#bfTrunkFmiLms <- read.table(WhiteFmiLmi_Male_TrunkLMI_020702t.txt, header=T, sep="\t")
 
 
 
