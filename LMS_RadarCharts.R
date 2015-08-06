@@ -182,7 +182,7 @@ keep <- c("Age","ZFTrunkFmi", "ZFTrunkLmi","ZFArmFmi","ZFArmLmi",
            "ZFLegFmi","ZFLegLmi","Gender1")
 dCombinedBlackZ3 <- dCombinedBlackZ2[keep]
 
-BlackEnd <- cbind(nhBlack, dCombinedBlackZ3)
+blackLMSZScoreFmiLmi <- cbind(nhBlack, dCombinedBlackZ3)
 
 ##Hispanic Data Set##
 
@@ -238,7 +238,7 @@ keep <- c("Age","ZFTrunkFmi", "ZFTrunkLmi","ZFArmFmi","ZFArmLmi",
            "ZFLegFmi","ZFLegLmi","Gender1")
 dCombinedHispZ3 <- dCombinedHispZ2[keep]
 
-HispEnd <- cbind(nhHisp, dCombinedHispZ3)
+hispLMSZScoreFmiLmi <- cbind(nhHisp, dCombinedHispZ3)
 
 
 ##White Data Set##
@@ -296,7 +296,7 @@ keep <- c("Age","ZFTrunkFmi", "ZFTrunkLmi","ZFArmFmi","ZFArmLmi",
            "ZFLegFmi","ZFLegLmi","Gender1")
 dCombinedWhiteZ3 <- dCombinedWhiteZ2[keep]
 
-WhiteEnd <- cbind(nhWhite, dCombinedWhiteZ3)
+whiteLMSZScoreFmiLmi <- cbind(nhWhite, dCombinedWhiteZ3)
 
 #####
 #                                        #
@@ -384,10 +384,11 @@ wmLms <- cbind(wmArmFmiLms[keep], wmArmLmiLms[keep],
 
 #Add more comments here and within the loop
 #Right here I calculate the LMS Z score for both arms and legs in all cases.
+
 for (i in 1:3){#Ethnicity, normally 1:3
   zScoreFinal = NULL
   for (j in 1:2){#Gender, normally 1:2
-    if (i == 1) {zScore = BlackEnd #Black 
+    if (i == 1) {zScore = blackLMSZScoreFmiLmi #Black 
               race = "Black"
     if (j == 1) {lmsChart = bfLms
       gender = "Female" #Female
@@ -395,7 +396,7 @@ for (i in 1:3){#Ethnicity, normally 1:3
     else if (j == 2) {lmsChart = bmLms
       gender = "Male"#Male
     }
-    } else if (i == 2) {zScore = HispEnd #Hisp
+    } else if (i == 2) {zScore = hispLMSZScoreFmiLmi #Hisp
                       race = "Hisp"
     if (j == 1) {lmsChart = hfLms
       gender = "Female"#Female
@@ -403,7 +404,7 @@ for (i in 1:3){#Ethnicity, normally 1:3
     else if (j == 2) {lmsChart = hmLms
       gender = "Male"#Male
     }
-    } else if (i == 3) {zScore = WhiteEnd #White
+    } else if (i == 3) {zScore = whiteLMSZScoreFmiLmi #White
                     race = "White"
     if (j == 1) {lmsChart = wfLms
      gender = "Female"#Female
@@ -442,8 +443,10 @@ for (i in 1:3){#Ethnicity, normally 1:3
                          zRLegLmi= (((rightLegLmi/mLegLmi)^lLegLmi)-1)/(lLegLmi*sLegLmi))
       zScore4 <- transform(zScore3,
                          zAvgFmi= (ZFTrunkFmi+zLArmFmi+zRArmFmi+zLLegFmi+zRLegFmi) / 5, 
-                         zAvgLmi= (ZFTrunkLmi+zLArmLmi+zRArmLmi+zLLegLmi+zRLegLmi) / 5 )
-      
+                         zAvgLmi= (ZFTrunkLmi+zLArmLmi+zRArmLmi+zLLegLmi+zRLegLmi) / 5
+      )
+                        
+                         
       keep <- c("Race","Gender", "BMXHT","BMXWT","RIDAGEYR",
                  "ZFTrunkFmi","ZFTrunkLmi", "zLArmFmi","zRArmFmi",
                  "zLArmLmi","zRArmLmi","zLLegFmi","zRLegFmi",
@@ -457,8 +460,18 @@ for (i in 1:3){#Ethnicity, normally 1:3
       
       zScoreFinal <- rbind(zScoreFinal,zScore5)
       
+      
+      
 }#End of cycle through ages 8-85
 }#End of cycle through genders
+  
+  
+  
+  fmiZSd <- data.frame(SD(t(zScoreFinal[,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")])))
+  colnames(fmiZSd) <- "Z_FMI_SD"
+  lmiZSd <- data.frame(SD(t(zScoreFinal[,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")])))
+  colnames(lmiZSd) <- "Z_LMI_SD"
+  zScoreFinal <- cbind(zScoreFinal, fmiZSd, lmiZSd)
   
   #setwd("X:\\bhinton")
   #write.table(zScoreFinal, file=sprintf("%s.ZScoreValues.txt",race))
@@ -539,11 +552,21 @@ race = "Hisp" # Either "Black", "Hisp", or "White" Case Sensitive
 gender = "Female" #Either "Male" or "Female" CASE SENSITIVE
 selectAge = 24 # set to age of interest
 setwd("X:\\bhinton") #Set this to wd with (Black/White/Hisp)ZScoreValues.txt from part 2
-selectNumber = 4  #Number of individuals in this group that you want to examine
+selectNumber = 4  #Choices: 1, 2, 4, 9
+                  #Number of individuals in this group that you want to examine
                   #Will choose random individuals in that demographic set
 
 zData <- read.table(file=sprintf("%s.ZScoreValues.txt",race, sep="\t"))
 
+if (selectNumber == 1) {
+  chartDim <- c(1,1)
+} else if (selectNumber == 2) {
+  chartDim <- c(1,2)
+}else if (selectNumber == 4) {
+  chartDim <- c(2,2) 
+}else if (selectNumber == 9) {
+  chartDim <- c(3,3)
+}
 
 #Currently code will only select the first selectNumber rows in the file
 zData1 <- zData[zData[, "Gender"] == gender,] 
@@ -567,40 +590,22 @@ maxmin <- data.frame(
   Z_RL=c(2, -2),
   Z_RA=c(2, -2))
 
-ind1Data <- rbind(maxmin,fmiData[1,],lmiData[1,])
-ind2Data <- rbind(maxmin,fmiData[2,],lmiData[2,])
-ind3Data <- rbind(maxmin,fmiData[3,],lmiData[3,])
-ind4Data <- rbind(maxmin,fmiData[4,],lmiData[4,])
 
-op <- par(mar=c(1, 2, 2, 1),mfrow=c(2, 2))
+op <- par(mar=c(1, 2, 2, 1),mfrow=chartDim)
+for (i in 1:selectNumber){#Ethnicity, normally 1:3
+  
+  
+  ind1Data <- rbind(maxmin,fmiData[i,],lmiData[i,])
+  radarchart(ind1Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+             pcol = c("goldenrod3", "firebrick4"),
+             vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
+             title=sprintf("%s %s Individual FMI/LMI Chart", race, gender))
+  
+}  
 
-radarchart(ind1Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
-           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
-           title=sprintf("%s %s Individual FMI/LMI Chart", race, gender))
-#cex.lab doesnt do anything
-#Cex.main is for the title
+legend('topright', c("FMI", "FFMI") , lwd=2, 
+       col=c("goldenrod3", "firebrick4"), bty='n', cex=1.2)   
 
-radarchart(ind2Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
-           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
-           title=sprintf("%s %s Individual FMI/LMI Chart", race, gender))
-#cex.lab doesnt do anything
-#Cex.main is for the title
-radarchart(ind3Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
-           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
-           title=sprintf("%s %s Individual FMI/LMI Chart", race, gender))
-#cex.lab doesnt do anything
-#Cex.main is for the title
-radarchart(ind4Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
-           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
-           title=sprintf("%s %s Individual FMI/LMI Chart", race, gender))
-#cex.lab doesnt do anything
-#Cex.main is for the title
-
-
-legend('topright', c("FMI", "FFMI") , lty=1, col=c("Black", "Red"), bty='n', cex=1)    
-        # gives the legend appropriate symbols (lines)
-       
-      # gives the legend lines the correct color and width
 
 #Color scheme.... black first, then red?
 #Black is FMI
@@ -620,9 +625,10 @@ gender = "Male" #Either "Male" or "Female" CASE SENSITIVE
 #selectAge = 24   Not currently functional, but could maybe change this to 
                   #select from certain age range
 setwd("X:\\bhinton") #Set this to wd with (Black/White/Hisp)ZScoreValues.txt from part 2
-selectNumber = 4 #Number of individuals in this group that you want to examine
+selectNumber = 4  #Choices: 1, 2, 4, 9
+                  #Number of individuals in this group that you want to examine
                   #Will choose random individuals in that demographic set
-zChoice = 1  #Choice of the Avg Z score of individuals you'd like to plot
+zChoice = 2  #Choice of the Avg Z score of individuals you'd like to plot
 fmiOrLmi = "FMI"  #Choice of if you want the Avg Z score to be of Avg FMI or LMI
                   #Either FMI or LMI (Case sensitive)
 
@@ -637,6 +643,16 @@ if (fmiOrLmi == "FMI") {
 } else if (fmiOrLmi == "LMI") {
   zData2 <- subset(zData1, zData1$Z_LMI_AVG <= zMax & zData1$Z_LMI_AVG >= zMin) 
 }
+if (selectNumber == 1) {
+  chartDim <- c(1,1)
+} else if (selectNumber == 2) {
+  chartDim <- c(1,2)
+}else if (selectNumber == 4) {
+  chartDim <- c(2,2) 
+}else if (selectNumber == 9) {
+  chartDim <- c(3,3)
+}
+
 
 dzData <- data.frame(zData2)  #Converts to dataframe
 dimension <- dim(dzData)
@@ -655,35 +671,215 @@ maxmin <- data.frame(
   Z_RL=c(2, -2),
   Z_RA=c(2, -2))
 
-ind1Dat <- rbind(maxmin,fmiData[1,],lmiData[1,])
-ind2Dat <- rbind(maxmin,fmiData[2,],lmiData[2,])
-ind3Dat <- rbind(maxmin,fmiData[3,],lmiData[3,])
-ind4Dat <- rbind(maxmin,fmiData[4,],lmiData[4,])
 
-op <- par(mar=c(1, 2, 2, 1),mfrow=c(2, 2))
+op <- par(mar=c(1, 2, 2, 1),mfrow=chartDim)
+for (i in 1:selectNumber){#Ethnicity, normally 1:3
+  
+  
+  ind1Data <- rbind(maxmin,fmiData[i,],lmiData[i,])
+  radarchart(ind1Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+             pcol = c("goldenrod3", "firebrick4"),
+             vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
+             title=sprintf("%s %s Individual FMI/LMI Chart", race, gender))
+  
+}  
 
-radarchart(ind1Dat, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
-           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
-           title=sprintf("%s %s Individual FMI/LMI Chart", race, gender))
-#cex.lab doesnt do anything
-#Cex.main is for the title
+legend('topright', c("FMI", "FFMI") , lwd=2, 
+       col=c("goldenrod3", "firebrick4"), bty='n', cex=1.2)  
 
-radarchart(ind2Dat, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
-           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
-           title=sprintf("%s %s Individual FMI/LMI Chart", race, gender))
-#cex.lab doesnt do anything
-#Cex.main is for the title
-radarchart(ind3Dat, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
-           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
-           title=sprintf("%s %s Individual FMI/LMI Chart", race, gender))
-#cex.lab doesnt do anything
-#Cex.main is for the title
-radarchart(ind4Dat, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
-           vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
-           title=sprintf("%s %s Individual FMI/LMI Chart", race, gender))
-#cex.lab doesnt do anything
-#Cex.main is for the title
 
-legend('topright', c("FMI", "FFMI") , lty=1, col=c("Black", "Red"), bty='n', cex=1)    
-# gives the legend appropriate symbols (lines)
 
+#####
+#                                        #
+#                                        #
+#Part D: Examining SD regional z by avg z score
+#                                        #
+#                                        #
+
+
+#Inputs:
+library(fmsb) #Required package for Radar Charts
+
+#select from certain age range
+setwd("X:\\bhinton") #Set this to wd with (Black/White/Hisp)ZScoreValues.txt from part 2
+
+cNames <- c("zRange")
+zRange <- (c(-2, -1.5, -1, -.5, 0, .5, 1, 1.5, 2))
+zTable <- NULL
+zTable <- data.frame(zRange)
+nTable <- NULL
+nTable <- data.frame(zRange)
+column <- 1
+count = 0
+for (h in 1:2){#FMI/LMI}  
+  for (i in 1:2){#Gender, normally 1:3
+    zScoreFinal <- NULL
+
+    for (j in 1:3){#Ethnicity, normally 1:2
+      column <- column + 1
+      zFile <- 0
+      zSd <- NULL
+      for (k in zRange){#Z score ranges
+        print(k)
+        
+        zFile <- zFile + 1
+        if (h == 1) {leanOrFat = "FMI"
+          if (i == 1) {gender = "Female"
+            if (j==1) {race = "Black"
+            }else if (j==2) {race = "Hisp"
+            }else if (j==3) {race = "White"}
+          }else if (i==2) {gender = "Male"
+            if (j==1) {race = "Black"
+            }else if (j==2) {race = "Hisp"
+            }else if (j==3) {race = "White"}}
+        }else if (h==2) {leanOrFat = "LMI"}
+          if (i == 1) {gender = "Female"
+            if (j==1) {race = "Black"
+            }else if (j==2) {race = "Hisp"
+            }else if (j==3) {race = "White"}
+          }else if (i==2) {gender = "Male"
+            if (j==1) {race = "Black"
+            }else if (j==2) {race = "Hisp"
+            }else if (j==3) {race = "White"}
+          }
+        
+        
+        zCurrent <- k
+        zData <- read.table(file=sprintf("%s.ZScoreValues.txt",race, sep="\t"))
+        zData1 <- zData[zData[, "Gender"] == gender,] 
+        zMax = zCurrent + 0.1
+        zMin = zCurrent - 0.1
+        
+        
+        
+        if (fmiOrLmi == "FMI") {
+          zData2 <- subset(zData1, zData1$Z_FMI_AVG <= zMax & zData1$Z_FMI_AVG >= zMin) 
+          zSd <- colMeans(data.frame(zData2[,"Z_FMI_SD"]))
+        } else if (fmiOrLmi == "LMI") {
+          zData2 <- subset(zData1, zData1$Z_LMI_AVG <= zMax & zData1$Z_LMI_AVG >= zMin)
+          zSd <- colMeans(data.frame(zData2[,"Z_LMI_SD"]))
+        }
+        print(zSd)
+        dimension <- dim(zData2)
+        #zSd <- data.frame(SD(t(zScoreFinal[,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")])))
+        print(dimension[1])
+        zTable[zFile,column] <- zSd
+        nTable[zFile,column] <- dimension[1]
+        
+        
+        #NEed to calculate average z score and store in a string
+        #need to calculate and include the n of this stuff
+        
+      }#End of cycling through z scores 
+      cNames <- cbind(cNames,sprintf("%s.%s.%s.Z_SD.",race,gender,leanOrFat) )
+      #colnames(zSd) <- sprintf("%s.%s.%s.Z_SD.",race,gender,leanOrFat)
+      #zTable[column,] <- cbind(zTable,zSd)
+    }#End of Ethnicity
+  }#End of Gender Cycles
+}#End of FMI/LMI Switch
+colnames(zTable) <- cNames        
+colnames(nTable) <- cNames           
+          
+          
+       
+        
+        zData <- read.table(file=sprintf("%s.ZScoreValues.txt",race, sep="\t"))
+        zData1 <- zData[zData[, "Gender"] == gender,] 
+        
+        if (fmiOrLmi == "FMI") {
+          zData2 <- subset(zData1, zData1$Z_FMI_AVG <= zMax & zData1$Z_FMI_AVG >= zMin)
+          aa1 <- colMeans(data.frame(zData2[,"Z_FMI_SD"]))
+        } else if (fmiOrLmi == "LMI") {
+          zData2 <- subset(zData1, zData1$Z_LMI_AVG <= zMax & zData1$Z_LMI_AVG >= zMin) 
+          aa1 <- colMeans(data.frame(zData2[,"Z_LMI_SD"]))
+        }
+        
+        
+      }#End of cycle through genders
+      
+      
+      
+      fmiZSd <- data.frame(SD(t(zScoreFinal[,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")])))
+      colnames(fmiZSd) <- "Z_FMI_SD"
+      lmiZSd <- data.frame(SD(t(zScoreFinal[,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")])))
+      colnames(lmiZSd) <- "Z_LMI_SD"
+      zScoreFinal <- cbind(zScoreFinal, fmiZSd, lmiZSd)
+      
+      #setwd("X:\\bhinton")
+      #write.table(zScoreFinal, file=sprintf("%s.ZScoreValues.txt",race))
+      #Activate this to write to a new table (Will need to do this for averages)
+      
+    }#End of cycle through races
+  
+
+
+#####
+#                                        #
+#                                        #
+#Part E: T-test of different things
+#                                        #
+#                                        #
+
+blackData <- read.table(file=sprintf("Black.ZScoreValues.txt", sep="\t"))
+hispData <- read.table(file=sprintf("Hisp.ZScoreValues.txt", sep="\t"))
+whiteData <- read.table(file=sprintf("White.ZScoreValues.txt", sep="\t"))
+
+
+#To compare::::
+#Young vs old   # Each region, 
+#Black vs Hisp vs White   #Each Region, 
+#z=-2 vs zavg = 0  --> eccentricity of the shapes? FMI shape vs LMI shape?
+
+#options to test:  (Could have different section for each test)
+#total LMI/FMI ratios
+#Symmetry/Assymetry (right side divided by left side)
+#Regional LMI to FMI ratio
+#Symmetry of LMI curve vs FMI curve
+
+#Look at email with John
+
+
+
+FullData <- rbind(blackData, hispData, whiteData)
+#Options to select by:
+#Inputs:
+library(fmsb) #Required package for Radar Charts
+race = "Hisp" # Either "Black", "Hisp", or "White" Case Sensitive
+gender = "Male" #Either "Male" or "Female" CASE SENSITIVE
+#selectAge = 24   Not currently functional, but could maybe change this to 
+#select from certain age range
+setwd("X:\\bhinton") #Set this to wd with (Black/White/Hisp)ZScoreValues.txt from part 2
+selectNumber = 4  #Choices: 1, 2, 4, 9
+#Number of individuals in this group that you want to examine
+#Will choose random individuals in that demographic set
+ #Choice of the Avg Z score of individuals you'd like to plot
+ #Choice of if you want the Avg Z score to be of Avg FMI or LMI
+#Either FMI or LMI (Case sensitive)
+
+
+zChoice = 2 
+zMax = zChoice + 0.1
+zMin = zChoice - 0.1
+fmiOrLmi = "FMI" 
+
+
+if (fmiOrLmi == "FMI") {
+  zData1 <- subset(blackData, blackData$Z_FMI_AVG <= zMax & blackData$Z_FMI_AVG >= zMin) 
+  zData2 <- subset(whiteData, whiteData$Z_LMI_AVG <= zMax & whiteData$Z_LMI_AVG >= zMin)
+} else if (fmiOrLmi == "LMI") {
+  zData1 <- subset(blackData, blackData$Z_FMI_AVG <= zMax & blackData$Z_FMI_AVG >= zMin) 
+  zData2 <- subset(whiteData, whiteData$Z_LMI_AVG <= zMax & whiteData$Z_LMI_AVG >= zMin) 
+}
+
+age1 <- blackData[blackData[, "Age"] == 40,]
+age2 <- whiteData[whiteData[, "Age"] == 40,]
+
+gender1 <- blackData[blackData[, "Gender"] == "Male",]
+gender2 <- whiteData[whiteData[, "Gender"] == "Male",]
+
+
+data1 <- zData1["Z_FMI_SD"]
+data2 <-zData2["Z_FMI_SD"]
+  
+
+t.test(data1, data2)      # P = .00001855
