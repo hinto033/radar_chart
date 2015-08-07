@@ -1,4 +1,7 @@
 
+
+#Readme
+#####
 #Required Packages: fmsb (Contains radar function)
 #                   sas7bdat (Allows to import sas files)
 #must load and install the packages in order for the code to run
@@ -37,7 +40,7 @@
 #These are the essential files produced in parts 0-2
 
 #END OF README
-
+#Part 0: Import Sas Data Set
 #####
 #                                        #
 #                                        #
@@ -108,7 +111,7 @@ nhanesHispFmiLmi <- subset(dNhanesFmiLmi, dNhanesFmiLmi$Race=="Mexican American"
 #write.csv(nhanesHispFmiLmi, file = "HispFmiLmi.csv")
 #write.csv(test, file = "dxa_bmx.csv")
 #If I want to write the whole database
-
+#Part 1: Importing Z scores from LMS tables
 #####
 #                                        #
 #                                        #
@@ -297,7 +300,7 @@ keep <- c("Age","ZFTrunkFmi", "ZFTrunkLmi","ZFArmFmi","ZFArmLmi",
 dCombinedWhiteZ3 <- dCombinedWhiteZ2[keep]
 
 whiteLMSZScoreFmiLmi <- cbind(nhWhite, dCombinedWhiteZ3)
-
+#Importing LMS values and calculating arms/legs
 #####
 #                                        #
 #                                        #
@@ -480,7 +483,7 @@ for (i in 1:3){#Ethnicity, normally 1:3
 }#End of cycle through races
 
 # z = ( y / m)^L - 1 / (L*S)
-
+#Producing Radar Chart (Separate LMI/FMI)
 #####
 #                                        #
 #                                        #
@@ -538,7 +541,7 @@ radarchart(lmiDataFinal, axistype=3, seg=4, cex.main=1, plty=1, plwd=2,
 legend('topright', c("Person1", "Person2", "Person3", "Person4") ,
        lty=1, col=c("Black", "Red","Green","Blue"), bty='n', cex=1)    
 # gives the legend appropriate symbols (lines)
-
+#Producing Radar Chart (LMI/FMI superimposed for each individual)
 #####
 #                                                       #
 #                                                       #
@@ -610,7 +613,7 @@ legend('topright', c("FMI", "FFMI") , lwd=2,
 #Color scheme.... black first, then red?
 #Black is FMI
 #Red is FFMI
-
+#Producing Radar Chart (Superimposed and restricted by avg Z score)
 #####
 #                                        #
 #                                        #
@@ -686,9 +689,7 @@ for (i in 1:selectNumber){#Ethnicity, normally 1:3
 
 legend('topright', c("FMI", "FFMI") , lwd=2, 
        col=c("goldenrod3", "firebrick4"), bty='n', cex=1.2)  
-
-
-
+#Produce Table of SD of Regional Z by different Avg Z scores
 #####
 #                                        #
 #                                        #
@@ -811,8 +812,7 @@ colnames(nTable) <- cNames
       
     }#End of cycle through races
   
-
-
+# Perform Various tTests to test symmetry, ethnicity, age, ratios, etc.
 #####
 #                                        #
 #                                        #
