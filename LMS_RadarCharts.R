@@ -1084,4 +1084,199 @@ dxafull <-
 
 
 
+#####
+
+
+library(fmsb)
+setwd("X:\\bhinton") 
+
+blackData <- read.table(file=sprintf("Black.ZScoreValues.txt", sep="\t"))
+hispData <- read.table(file=sprintf("Hisp.ZScoreValues.txt", sep="\t"))
+whiteData <- read.table(file=sprintf("White.ZScoreValues.txt", sep="\t"))
+
+fullData <- rbind(blackData, hispData, whiteData)
+
+newdata <- fullData[ which(fullData$Gender=="Female" 
+                            & fullData$Age == 65 & fullData$Race=="Non-Hispanic Black") , ]
+
+
+
+
+Age <- 15
+Race <- "black"
+Gender <- "Male"
+testData1 <- subset(blackData, blackData$Gender == Gender) 
+
+newdata <- blackData[ which(blackData$Gender=="Female" 
+                         & blackData$Age > 65) , ]
+& blackData$Race=="Non-Hispanic Black"
+#testData1 <- subset(blackData, blackData$Age == Age & blackData$Gender == Gender & blackData$Race == Race) 
+
+zData1 <- blackData[blackData[, "Gender"] == Gender,] 
+
+hispData <- read.table(file=sprintf("Hisp.ZScoreValues.txt", sep="\t"))
+whiteData <- read.table(file=sprintf("White.ZScoreValues.txt", sep="\t"))
+
+maxmin <- data.frame(
+  Z_TR=c(2, -2),
+  Z_LA=c(2, -2),
+  Z_LL=c(2, -2),
+  Z_RL=c(2, -2),
+  Z_RA=c(2, -2))
+
+
+nPlots = 1
+manipulate(
+  age = slider(8,85,step=1,initial=15),
+  #nPlots1 = slider(1,2,step=1,initial=1),
+  race = picker("Non-Hispanic Black", "Non-Hispanic White", "Hisp/Mex", initial = "Non-Hispanic Black"),
+  gender = picker("Female", "Male", initial = "Female"),
+  
+  zData2 <- fullData[ which(fullData$Gender==gender 
+                             & fullData$age == 65 & fullData$race=="Non-Hispanic Black") , ],
+  
+  
+  
+  dzData <- data.frame(zData2),  #Converts that set to dataframe
+  #finds dimensions of that table and takes selectNumber random rows from that data set
+  dimension <- dim(dzData),
+  nRow <- floor(runif(1, 1,dimension[1])),
+  #selects out only those random rows and their FMI/LMI data
+  fmiData <- dzData[nRow,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")],
+  lmiData <- dzData[nRow,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")],
+  #renames the columns because column names in fmiData/lmiData must match maxmin,
+  colnames(fmiData) <- c("Z_TR", "Z_LA", "Z_LL", "Z_RL", "Z_RA"),
+  colnames(lmiData) <- c("Z_TR", "Z_LA", "Z_LL", "Z_RL", "Z_RA"),
+  
+  
+  ind1Data <- rbind(maxmin,fmiData[1,],lmiData[1,]),
+  
+  #Cex.main is for the title size, seg=number of segments between lines
+  #plwd = line width
+  radarchart(ind1Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+             pcol = c("goldenrod3", "firebrick4"),
+             vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
+             title=sprintf("%s %s Individual FMI/LMI Chart", race, gender)),
+  legend('topright', c("FMI", "FFMI") , lwd=2, 
+         col=c("goldenrod3", "firebrick4"), bty='n', cex=1.2) 
+  
+  #hist(rnorm(n),breaks=k,freq=FALSE),
+)
+
+
+
+manipulate(
+  radarchart(ind1Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+             pcol = c("goldenrod3", "firebrick4"),
+             vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
+             title=sprintf("%s %s Individual FMI/LMI Chart", race, gender)),
+  age = slider(8,85,step=1,initial=15),
+  #nPlots1 = slider(1,2,step=1,initial=1),
+  race = picker("black", "white", "hisp", initial="black"),
+  gender = picker("female", "male", initial="female"),
+  
+  newdata <- fullData[ which(fullData$Gender==gender 
+                             & fullData$age == 65 & fullData$race=="Non-Hispanic Black") , ],
+  
+  
+  
+  dzData <- data.frame(zData2),  #Converts that set to dataframe
+  #finds dimensions of that table and takes selectNumber random rows from that data set
+  dimension <- dim(dzData),
+  nRow <- floor(runif(1, 1,dimension[1])),
+  #selects out only those random rows and their FMI/LMI data
+  fmiData <- dzData[nRow,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")],
+  lmiData <- dzData[nRow,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")],
+  #renames the columns because column names in fmiData/lmiData must match maxmin,
+  colnames(fmiData) <- c("Z_TR", "Z_LA", "Z_LL", "Z_RL", "Z_RA"),
+  colnames(lmiData) <- c("Z_TR", "Z_LA", "Z_LL", "Z_RL", "Z_RA"),
+    ind1Data <- rbind(maxmin,fmiData[1,],lmiData[1,])
+)
+
+
+
+
+
+
+library(fmsb) #Required package for Radar Charts
+race = "Hisp" # Either "Black", "Hisp", or "White" Case Sensitive
+gender = "Female" #Either "Male" or "Female" CASE SENSITIVE
+selectAge = 24 # set to age of interest
+setwd("X:\\bhinton") #Set this to wd with (Black/White/Hisp)ZScoreValues.txt from part 2
+selectNumber = 4  #Choices: 1, 2, 4, 9
+#Number of individuals in this group that you want to examine
+#Will choose random individuals in that demographic set
+#imports dataset of the race that you chose
+zData <- read.table(file=sprintf("%s.ZScoreValues.txt",race, sep="\t"))
+#Changes chart dimensions based on number of plots you want to make.
+if (selectNumber == 1) {
+  chartDim <- c(1,1)
+} else if (selectNumber == 2) {
+  chartDim <- c(1,2)
+}else if (selectNumber == 4) {
+  chartDim <- c(2,2) 
+}else if (selectNumber == 9) {
+  chartDim <- c(3,3)
+}
+
+#Selects patients of certain age and gender
+zData1 <- zData[zData[, "Gender"] == gender,] 
+zData2 <- zData1[zData1[, "Age"] == selectAge,] 
+
+
+dzData <- data.frame(zData2)  #Converts that set to dataframe
+#finds dimensions of that table and takes selectNumber random rows from that data set
+dimension <- dim(dzData)
+nRow <- floor(runif(selectNumber, 1,dimension[1]))
+#selects out only those random rows and their FMI/LMI data
+fmiData <- dzData[nRow,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")]
+lmiData <- dzData[nRow,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")]
+#renames the columns because column names in fmiData/lmiData must match maxmin
+colnames(fmiData) <- c("Z_TR", "Z_LA", "Z_LL", "Z_RL", "Z_RA")
+colnames(lmiData) <- c("Z_TR", "Z_LA", "Z_LL", "Z_RL", "Z_RA")
+#maxmin sets the maximum and minimum pentagon values
+
+#radarchart only works with two rows (maxmin) up on the top, 
+#and then the data you are plotting in rows below
+
+# op = Graphing parameters: #mfrow: 1st  number is no. rows, 2nd is no. columns.
+op <- par(mar=c(1, 2, 2, 1),mfrow=chartDim)
+for (i in 1:selectNumber){#Each time loop runs, it plots another individual's lmi/fmi chart
+
+  
+}  
+#Sets legend
+
+
+# Adapting Richie Cotton's gWidgettcltk example to RStudio's manipulate
+# C. Ladroue
+
+library("ggplot2")
+library("manipulate")
+
+chromium <- read.csv("chromium.csv")
+nickel <- read.csv("nickel.csv")
+
+manipulate({
+  p<- ggplot(data, aes(air, bm)) + geom_point()
+  p+facet_grid(facet)+scale_x_continuous(trans=xScale)+scale_y_continuous(trans=yScale)
+},
+yScale=picker("Linear"="identity","Log"="log10",label="Y Scale Transformation"),
+xScale=picker("Linear"="identity","Log"="log10",label="X Scale Transformation"),
+facet=picker( "None" = ". ~ .", "RPE" = ". ~ rpe","Welding type" = ". ~ welding.type","RPE and Welding type" = "rpe ~ welding.type",initial="None",label="Faceting"),
+data=picker("Chromium"=chromium,"Nickel"=nickel,label="Datasets")
+)
+
+
+
+
+manipulate(
+  hist(rnorm(n),breaks=k,freq=FALSE),
+  n = slider(10,1000,step=10,initial=100),
+  k = slider(5,1000,step=1,initial=10))
+
+
+
+
+
 
