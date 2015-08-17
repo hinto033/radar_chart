@@ -76,7 +76,7 @@ nhanesHispFmiLmi <- subset(dNhanesFmiLmi, dNhanesFmiLmi$Race=="Mexican American"
 write.csv(nhanesBlackFmiLmi, file = "BlackFmiLmi.csv")
 write.csv(nhanesWhiteFmiLmi, file = "WhiteFmiLmi.csv")
 write.csv(nhanesHispFmiLmi, file = "HispFmiLmi.csv")
-#write.csv(test, file = "dxa_bmx.csv")   #to rewrite the entire NHANES database as .csv
+#write.csv(nhanesFullData, file = "dxa_bmx.csv")   #to rewrite the entire NHANES database as .csv
 
 #Part 1: Importing Z scores from LMS tables
 #####
