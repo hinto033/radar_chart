@@ -29,6 +29,7 @@ mMax <- 54
 oMin <- 55
 oMax <- 74
 
+
 #Separate by Gender!
 
 data <- blackFmiLmi2
@@ -89,18 +90,29 @@ bfOldSdLmi <- sd(data$totBodyLmi[data$Gender == "Female" &
                                    data$RIDAGEYR <= oMax & data$RIDAGEYR >= oMin])
 
 
+bfAvgFmi <- mean(data$totBodyFmi[data$Gender == "Female" ])
+bfSdFmi <- sd(data$totBodyFmi[data$Gender == "Female" ])
+bfAvgLmi <- mean(data$totBodyLmi[data$Gender == "Female"])
+bfSdLmi <- sd(data$totBodyLmi[data$Gender == "Female" ])
 
-ranges <- c("18-34", "35-54", "55-74")
+bmAvgFmi <- mean(data$totBodyFmi[data$Gender == "Male" ])
+bmSdFmi <- sd(data$totBodyFmi[data$Gender == "Male"])
+bmAvgLmi <- mean(data$totBodyLmi[data$Gender == "Male"])
+bmSdLmi <- sd(data$totBodyLmi[data$Gender == "Male"])
 
-bmvaluesFmi <- c(bmYoungAvgFmi, bmMidAvgFmi, bmOldAvgFmi)
-bmSdFmi <- c(bmYoungSdFmi, bmMidSdFmi, bmOldSdFmi)
-bmvaluesLmi <- c(bmYoungAvgLmi, bmMidAvgLmi, bmOldAvgLmi)
-bmSdLmi <- c(bmYoungSdLmi, bmMidSdLmi, bmOldSdLmi)
 
-bfvaluesFmi <- c(bfYoungAvgFmi, bfMidAvgFmi, bfOldAvgFmi)
-bfSdFmi <- c(bfYoungSdFmi, bfMidSdFmi, bfOldSdFmi)
-bfvaluesLmi <- c(bfYoungAvgLmi, bfMidAvgLmi, bfOldAvgLmi)
-bfSdLmi <- c(bfYoungSdLmi, bfMidSdLmi, bfOldSdLmi)
+
+ranges <- c("18-34", "35-54", "55-74", "All Ages")
+
+bmvaluesFmi <- c(bmYoungAvgFmi, bmMidAvgFmi, bmOldAvgFmi, bmAvgFmi)
+bmSdFmi <- c(bmYoungSdFmi, bmMidSdFmi, bmOldSdFmi, bmSdFmi)
+bmvaluesLmi <- c(bmYoungAvgLmi, bmMidAvgLmi, bmOldAvgLmi,bmAvgLmi)
+bmSdLmi <- c(bmYoungSdLmi, bmMidSdLmi, bmOldSdLmi, bmSdLmi)
+
+bfvaluesFmi <- c(bfYoungAvgFmi, bfMidAvgFmi, bfOldAvgFmi, bfAvgFmi)
+bfSdFmi <- c(bfYoungSdFmi, bfMidSdFmi, bfOldSdFmi, bfSdFmi)
+bfvaluesLmi <- c(bfYoungAvgLmi, bfMidAvgLmi, bfOldAvgLmi, bfAvgLmi)
+bfSdLmi <- c(bfYoungSdLmi, bfMidSdLmi, bfOldSdLmi, bfSdLmi)
 
 
 op <- par(mar=c(1, 2, 2, 1),mfrow=c(2, 1))
@@ -110,8 +122,8 @@ y.sd <- bmSdFmi
 y1.means <- bfvaluesFmi
 y1.sd <- bfSdFmi
 
-yy <- matrix(c(y.means,y1.means),2,3,byrow=TRUE)
-ee <- matrix(c(y.sd,y1.sd),2,3,byrow=TRUE)*1.96/10
+yy <- matrix(c(y.means,y1.means),2,4,byrow=TRUE)
+ee <- matrix(c(y.sd,y1.sd),2,4,byrow=TRUE)*1.96/10
 barx <- barplot(yy, beside=TRUE,col=c("blue","magenta"), main="Black FMI Values",
                 names.arg=ranges, axis.lty=1, xlab="Replicates",
                 ylab="Value (arbitrary units)", ylim=c(0, 15))
@@ -128,8 +140,8 @@ y1.means <- bfvaluesLmi
 y1.sd <- bfSdLmi
 
 
-yy <- matrix(c(y.means,y1.means),2,3,byrow=TRUE)
-ee <- matrix(c(y.sd,y1.sd),2,3,byrow=TRUE)*1.96/10
+yy <- matrix(c(y.means,y1.means),2,4,byrow=TRUE)
+ee <- matrix(c(y.sd,y1.sd),2,4,byrow=TRUE)*1.96/10
 barx <- barplot(yy, beside=TRUE,col=c("blue","magenta"), main="Black LMI Values",
                 names.arg=ranges, axis.lty=1, xlab="Replicates",
                 ylab="Value (arbitrary units)", ylim=c(0, 30))
@@ -202,18 +214,29 @@ hfOldSdLmi <- sd(data$totBodyLmi[data$Gender == "Female" &
                                    data$RIDAGEYR <= oMax & data$RIDAGEYR >= oMin])
 
 
+hfAvgFmi <- mean(data$totBodyFmi[data$Gender == "Female" ])
+hfSdFmi <- sd(data$totBodyFmi[data$Gender == "Female" ])
+hfAvgLmi <- mean(data$totBodyLmi[data$Gender == "Female"])
+hfSdLmi <- sd(data$totBodyLmi[data$Gender == "Female" ])
 
-ranges <- c("young", "mid", "old")
+hmAvgFmi <- mean(data$totBodyFmi[data$Gender == "Male" ])
+hmSdFmi <- sd(data$totBodyFmi[data$Gender == "Male"])
+hmAvgLmi <- mean(data$totBodyLmi[data$Gender == "Male"])
+hmSdLmi <- sd(data$totBodyLmi[data$Gender == "Male"])
 
-hmvaluesFmi <- c(hmYoungAvgFmi, hmMidAvgFmi, hmOldAvgFmi)
-hmSdFmi <- c(hmYoungSdFmi, hmMidSdFmi, hmOldSdFmi)
-hmvaluesLmi <- c(hmYoungAvgLmi, hmMidAvgLmi, hmOldAvgLmi)
-hmSdLmi <- c(hmYoungSdLmi, hmMidSdLmi, hmOldSdLmi)
 
-hfvaluesFmi <- c(hfYoungAvgFmi, hfMidAvgFmi, hfOldAvgFmi)
-hfSdFmi <- c(hfYoungSdFmi, hfMidSdFmi, hfOldSdFmi)
-hfvaluesLmi <- c(hfYoungAvgLmi, hfMidAvgLmi, hfOldAvgLmi)
-hfSdLmi <- c(hfYoungSdLmi, hfMidSdLmi, hfOldSdLmi)
+
+ranges <- c("young", "mid", "old", "All Ages")
+
+hmvaluesFmi <- c(hmYoungAvgFmi, hmMidAvgFmi, hmOldAvgFmi, hmAvgFmi)
+hmSdFmi <- c(hmYoungSdFmi, hmMidSdFmi, hmOldSdFmi, hmSdFmi)
+hmvaluesLmi <- c(hmYoungAvgLmi, hmMidAvgLmi, hmOldAvgLmi, hmAvgLmi)
+hmSdLmi <- c(hmYoungSdLmi, hmMidSdLmi, hmOldSdLmi, hmSdLmi)
+
+hfvaluesFmi <- c(hfYoungAvgFmi, hfMidAvgFmi, hfOldAvgFmi, hfAvgFmi)
+hfSdFmi <- c(hfYoungSdFmi, hfMidSdFmi, hfOldSdFmi, hfSdFmi)
+hfvaluesLmi <- c(hfYoungAvgLmi, hfMidAvgLmi, hfOldAvgLmi, hfAvgLmi)
+hfSdLmi <- c(hfYoungSdLmi, hfMidSdLmi, hfOldSdLmi, hfSdLmi)
 
 
 op <- par(mar=c(1, 2, 2, 1),mfrow=c(2, 1))
@@ -223,8 +246,8 @@ y.sd <- hmSdFmi
 y1.means <- hfvaluesFmi
 y1.sd <- hfSdFmi
 
-yy <- matrix(c(y.means,y1.means),2,3,byrow=TRUE)
-ee <- matrix(c(y.sd,y1.sd),2,3,byrow=TRUE)*1.96/10
+yy <- matrix(c(y.means,y1.means),2,4,byrow=TRUE)
+ee <- matrix(c(y.sd,y1.sd),2,4,byrow=TRUE)*1.96/10
 barx <- barplot(yy, beside=TRUE,col=c("blue","magenta"), main="Hispanic FMI Values",
                 names.arg=ranges, axis.lty=1, xlab="Replicates",
                 ylab="Value (arbitrary units)", ylim=c(0, 15))
@@ -241,8 +264,8 @@ y1.means <- hfvaluesLmi
 y1.sd <- hfSdLmi
 
 
-yy <- matrix(c(y.means,y1.means),2,3,byrow=TRUE)
-ee <- matrix(c(y.sd,y1.sd),2,3,byrow=TRUE)*1.96/10
+yy <- matrix(c(y.means,y1.means),2,4,byrow=TRUE)
+ee <- matrix(c(y.sd,y1.sd),2,4,byrow=TRUE)*1.96/10
 barx <- barplot(yy, beside=TRUE,col=c("blue","magenta"), main="Hispanic LMI Values",
                 names.arg=ranges, axis.lty=1, xlab="Replicates",
                 ylab="Value (arbitrary units)", ylim=c(0, 30))
@@ -325,17 +348,30 @@ wfOldSdLmi <- sd(data$totBodyLmi[data$Gender == "Female" &
 
 
 
-ranges <- c("young", "mid", "old")
+wfAvgFmi <- mean(data$totBodyFmi[data$Gender == "Female" ])
+wfSdFmi <- sd(data$totBodyFmi[data$Gender == "Female" ])
+wfAvgLmi <- mean(data$totBodyLmi[data$Gender == "Female"])
+wfSdLmi <- sd(data$totBodyLmi[data$Gender == "Female" ])
 
-wmvaluesFmi <- c(wmYoungAvgFmi, wmMidAvgFmi, wmOldAvgFmi)
-wmSdFmi <- c(wmYoungSdFmi, wmMidSdFmi, wmOldSdFmi)
-wmvaluesLmi <- c(wmYoungAvgLmi, wmMidAvgLmi, wmOldAvgLmi)
-wmSdLmi <- c(wmYoungSdLmi, wmMidSdLmi, wmOldSdLmi)
+wmAvgFmi <- mean(data$totBodyFmi[data$Gender == "Male" ])
+wmSdFmi <- sd(data$totBodyFmi[data$Gender == "Male"])
+wmAvgLmi <- mean(data$totBodyLmi[data$Gender == "Male"])
+wmSdLmi <- sd(data$totBodyLmi[data$Gender == "Male"])
 
-wfvaluesFmi <- c(wfYoungAvgFmi, wfMidAvgFmi, wfOldAvgFmi)
-wfSdFmi <- c(wfYoungSdFmi, wfMidSdFmi, wfOldSdFmi)
-wfvaluesLmi <- c(wfYoungAvgLmi, wfMidAvgLmi, wfOldAvgLmi)
-wfSdLmi <- c(wfYoungSdLmi, wfMidSdLmi, wfOldSdLmi)
+
+
+
+ranges <- c("young", "mid", "old", "All Ages")
+
+wmvaluesFmi <- c(wmYoungAvgFmi, wmMidAvgFmi, wmOldAvgFmi, wmAvgFmi)
+wmSdFmi <- c(wmYoungSdFmi, wmMidSdFmi, wmOldSdFmi, wmSdFmi)
+wmvaluesLmi <- c(wmYoungAvgLmi, wmMidAvgLmi, wmOldAvgLmi, wmAvgLmi)
+wmSdLmi <- c(wmYoungSdLmi, wmMidSdLmi, wmOldSdLmi, wmSdLmi)
+
+wfvaluesFmi <- c(wfYoungAvgFmi, wfMidAvgFmi, wfOldAvgFmi, wfAvgFmi)
+wfSdFmi <- c(wfYoungSdFmi, wfMidSdFmi, wfOldSdFmi, wfSdFmi)
+wfvaluesLmi <- c(wfYoungAvgLmi, wfMidAvgLmi, wfOldAvgLmi, wfAvgLmi)
+wfSdLmi <- c(wfYoungSdLmi, wfMidSdLmi, wfOldSdLmi, wfSdLmi)
 
 
 op <- par(mar=c(1, 2, 2, 1),mfrow=c(2, 1))
@@ -345,10 +381,10 @@ y.sd <- wmSdFmi
 y1.means <- wfvaluesFmi
 y1.sd <- wfSdFmi
 
-yy <- matrix(c(y.means,y1.means),2,3,byrow=TRUE)
-ee <- matrix(c(y.sd,y1.sd),2,3,byrow=TRUE)*1.96/10
+yy <- matrix(c(y.means,y1.means),2,4,byrow=TRUE)
+ee <- matrix(c(y.sd,y1.sd),2,4,byrow=TRUE)*1.96/10
 barx <- barplot(yy, beside=TRUE,col=c("blue","magenta"), main="White FMI Values",
-                names.arg=1:3, axis.lty=1, xlab="Replicates",
+                names.arg=ranges, axis.lty=1, xlab="Replicates",
                 ylab="Value (arbitrary units)", ylim=c(0, 15))
 text(barx, yy, labels=round(yy, digits=2), pos=3)
 error.bar(barx,yy,ee)
@@ -362,13 +398,18 @@ y.sd <- wmSdLmi
 y1.means <- wfvaluesLmi
 y1.sd <- wfSdLmi
 
-yy <- matrix(c(y.means,y1.means),2,3,byrow=TRUE)
-ee <- matrix(c(y.sd,y1.sd),2,3,byrow=TRUE)*1.96/10
+yy <- matrix(c(y.means,y1.means),2,4,byrow=TRUE)
+ee <- matrix(c(y.sd,y1.sd),2,4,byrow=TRUE)*1.96/10
 barx <- barplot(yy, beside=TRUE,col=c("blue","magenta"), main="White LMI Values",
-                names.arg=1:3, axis.lty=1, xlab="Replicates",
+                names.arg=ranges, axis.lty=1, xlab="Replicates",
                 ylab="Value (arbitrary units)", ylim=c(0, 30))
 text(barx, yy, round(yy, digits=2), pos=3)
 error.bar(barx,yy,ee)
+
+
+
+
+
 
 
 
