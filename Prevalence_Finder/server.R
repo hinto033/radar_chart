@@ -8,46 +8,28 @@ fullData2 <- transform(fullData,
                        Bmi = totBodyFmi + totBodyLmi)
 
 total1 <- subset(fullData2, fullData2$RIDAGEYR <= 29 & fullData2$RIDAGEYR >= 20)
-
+hisptotal <- subset(hispData, hispData$RIDAGEYR <= 29 & hispData$RIDAGEYR >= 20)
+hisptotal1 <- transform(hisptotal,
+                       Bmi = totBodyFmi + totBodyLmi)
+#Need to calculate BMI HErE
 shinyServer(
   function(input, output) {
 
-# 
-
-#       
-#       ntotal <- nrow(total)
-#       nunder16 <- nrow(subset(total, total$Bmi <= 16))
-#       nunder17 <- nrow(subset(total, total$Bmi <= 17))
-#       nunder185 <- nrow(subset(total, total$Bmi <= 18.5))
-#       nover25 <- nrow(subset(total, total$Bmi >= 25))
-#       nover30 <- nrow(subset(total, total$Bmi >= 30))
-#       nover35 <- nrow(subset(total, total$Bmi >= 35))
-#       nover40 <- nrow(subset(total, total$Bmi >= 40))
-#       
-#       
-#       
-#       
-#       #nrow(subset(total, total$totBodyFmi >= 18.8))
-#       
-#       
-#       #nTotUnder <- nrow(subset(total, total$totBodyFmi <= input$totFmi))
-#       #TotOver  <- nrow(subset(total, total$totBodyFmi >= input$totFmi))
-#       
-#       nTrunkUnder <- nrow(subset(total, total$trunkFmi <= input$trunkFmi))
-#       nTrunkOver  <- nrow(subset(total, total$trunkFmi >= input$trunkFmi))
-#       
-#       nArmUnder <- nrow(subset(total, total$avgArmFmi <= input$ArmFmi))
-#       nArmOver  <- nrow(subset(total, total$avgArmFmi >= input$ArmFmi))
-#       
-#       nLegUnder <- nrow(subset(total, total$avgLegFmi <= input$LegFmi))
-#       nLegOver  <- nrow(subset(total, total$avgLegFmi >= input$LegFmi))
-#       
-      
-      
-      
+    
+    
+    
+    
       output$text1 <- renderText({ 
         total <- total1[ which(total1$Gender==input$gender 
                                & total1$Race==input$race) , ]
+        if (input$race=="Mex American/Other Hispanic") {
+          total <- hisptotal1[ which(hisptotal1$Gender==input$gender), ]
+          
+        }
+       # total <- hisptotal1[ which(hisptotal1$Gender=="Male"), ]
+        #total <- total1[ which(total1$Gender=="Male" 
+         #                      & total1$Race=="Non-Hispanic White") , ]
+        
         
               ntotal <- nrow(total)
               nunder16 <- nrow(subset(total, total$Bmi <= 16))
@@ -58,13 +40,13 @@ shinyServer(
               nover35 <- nrow(subset(total, total$Bmi >= 35))
               nover40 <- nrow(subset(total, total$Bmi >= 40))
         
-        paste("Under 16:", nunder16, nunder17, nunder185, nover25,
-              nover30, nover35, nover40)
-        paste("Under 17": nunder17)
-        paste("Under 18.5:", nunder185)
-        paste("Over 25:", nover25)
-        paste("Over 35:",nover35)
-        paste("Over 40:", nover40)
+        paste("              ", nunder16, nunder17, nunder185, nover25,
+              nover30, nover35, nover40, "      ", ntotal)
+        #paste("Under 17": nunder17)
+        #paste("Under 18.5:", nunder185)
+        #paste("Over 25:", nover25)
+        #paste("Over 35:",nover35)
+        #paste("Over 40:", nover40)
         
         
       })
@@ -72,6 +54,10 @@ shinyServer(
       output$text2 <- renderText({ 
         total <- total1[ which(total1$Gender==input$gender 
                                & total1$Race==input$race) , ]
+        if (input$race=="Mex American/Other Hispanic") {
+          total <- hisptotal1[ which(hisptotal1$Gender==input$gender), ]
+          
+        }
         
               nTotUnder <- nrow(subset(total, total$totBodyFmi <= input$totFmi))
               TotOver  <- nrow(subset(total, total$totBodyFmi >= input$totFmi))
@@ -85,15 +71,84 @@ shinyServer(
               nLegUnder <- nrow(subset(total, total$avgLegFmi <= input$legFmi))
               nLegOver  <- nrow(subset(total, total$avgLegFmi >= input$legFmi))
         
-        
-        
-        paste("Total Over/Under:", nTotUnder, TotOver)
-        paste("Trunk Over/Under:", nTrunkUnder, nTrunkOver)
-        paste("Arm Over/Under:", nArmUnder, nArmOver)
-        paste("Leg Over/Under:",  nLegUnder, nLegOver)
+         paste("Total Under/Over:", nTotUnder, TotOver)
+
        
       })
       
+      output$text3 <- renderText({ 
+        total <- total1[ which(total1$Gender==input$gender 
+                               & total1$Race==input$race) , ]
+        if (input$race=="Mex American/Other Hispanic") {
+          total <- hisptotal1[ which(hisptotal1$Gender==input$gender), ]
+          
+        }
+        
+        nTotUnder <- nrow(subset(total, total$totBodyFmi <= input$totFmi))
+        TotOver  <- nrow(subset(total, total$totBodyFmi >= input$totFmi))
+        
+        nTrunkUnder <- nrow(subset(total, total$trunkFmi <= input$trunkFmi))
+        nTrunkOver  <- nrow(subset(total, total$trunkFmi >= input$trunkFmi))
+        
+        nArmUnder <- nrow(subset(total, total$avgArmFmi <= input$armFmi))
+        nArmOver  <- nrow(subset(total, total$avgArmFmi >= input$armFmi))
+        
+        nLegUnder <- nrow(subset(total, total$avgLegFmi <= input$legFmi))
+        nLegOver  <- nrow(subset(total, total$avgLegFmi >= input$legFmi))
+        
+        
+        paste("Trunk Under/Over:", nTrunkUnder, nTrunkOver)
+      })
+
+      output$text4 <- renderText({ 
+        total <- total1[ which(total1$Gender==input$gender 
+                               & total1$Race==input$race) , ]
+        if (input$race=="Mex American/Other Hispanic") {
+          total <- hisptotal1[ which(hisptotal1$Gender==input$gender), ]
+          
+        }
+        
+        nTotUnder <- nrow(subset(total, total$totBodyFmi <= input$totFmi))
+        TotOver  <- nrow(subset(total, total$totBodyFmi >= input$totFmi))
+        
+        nTrunkUnder <- nrow(subset(total, total$trunkFmi <= input$trunkFmi))
+        nTrunkOver  <- nrow(subset(total, total$trunkFmi >= input$trunkFmi))
+        
+        nArmUnder <- nrow(subset(total, total$avgArmFmi <= input$armFmi))
+        nArmOver  <- nrow(subset(total, total$avgArmFmi >= input$armFmi))
+        
+        nLegUnder <- nrow(subset(total, total$avgLegFmi <= input$legFmi))
+        nLegOver  <- nrow(subset(total, total$avgLegFmi >= input$legFmi))
+        
+        
+        paste("Arm Under/Over:", nArmUnder, nArmOver)
+   
+        
+      })
+      output$text5 <- renderText({ 
+        total <- total1[ which(total1$Gender==input$gender 
+                               & total1$Race==input$race) , ]
+        if (input$race=="Mex American/Other Hispanic") {
+          total <- hisptotal1[ which(hisptotal1$Gender==input$gender), ]
+          
+        }
+        
+        nTotUnder <- nrow(subset(total, total$totBodyFmi <= input$totFmi))
+        TotOver  <- nrow(subset(total, total$totBodyFmi >= input$totFmi))
+        
+        nTrunkUnder <- nrow(subset(total, total$trunkFmi <= input$trunkFmi))
+        nTrunkOver  <- nrow(subset(total, total$trunkFmi >= input$trunkFmi))
+        
+        nArmUnder <- nrow(subset(total, total$avgArmFmi <= input$armFmi))
+        nArmOver  <- nrow(subset(total, total$avgArmFmi >= input$armFmi))
+        
+        nLegUnder <- nrow(subset(total, total$avgLegFmi <= input$legFmi))
+        nLegOver  <- nrow(subset(total, total$avgLegFmi >= input$legFmi))
+        
+        
+        paste("Leg Under/Over:",  nLegUnder, nLegOver)
+        
+      })
 
       
       
@@ -153,3 +208,36 @@ shinyServer(
 #          legend.title = legend,
 #         max = input$range[2], 
 #        min = input$range[1])
+
+
+
+# 
+
+#       
+#       ntotal <- nrow(total)
+#       nunder16 <- nrow(subset(total, total$Bmi <= 16))
+#       nunder17 <- nrow(subset(total, total$Bmi <= 17))
+#       nunder185 <- nrow(subset(total, total$Bmi <= 18.5))
+#       nover25 <- nrow(subset(total, total$Bmi >= 25))
+#       nover30 <- nrow(subset(total, total$Bmi >= 30))
+#       nover35 <- nrow(subset(total, total$Bmi >= 35))
+#       nover40 <- nrow(subset(total, total$Bmi >= 40))
+#       
+#       
+#       
+#       
+#       #nrow(subset(total, total$totBodyFmi >= 18.8))
+#       
+#       
+#       #nTotUnder <- nrow(subset(total, total$totBodyFmi <= input$totFmi))
+#       #TotOver  <- nrow(subset(total, total$totBodyFmi >= input$totFmi))
+#       
+#       nTrunkUnder <- nrow(subset(total, total$trunkFmi <= input$trunkFmi))
+#       nTrunkOver  <- nrow(subset(total, total$trunkFmi >= input$trunkFmi))
+#       
+#       nArmUnder <- nrow(subset(total, total$avgArmFmi <= input$ArmFmi))
+#       nArmOver  <- nrow(subset(total, total$avgArmFmi >= input$ArmFmi))
+#       
+#       nLegUnder <- nrow(subset(total, total$avgLegFmi <= input$LegFmi))
+#       nLegOver  <- nrow(subset(total, total$avgLegFmi >= input$LegFmi))
+#       
