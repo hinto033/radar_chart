@@ -15,20 +15,29 @@ setwd("X:\\bhinton") # Set the working directory where "dxa_bmx.sas7bdat" is loc
 
 #Imports the .sas7bdat file:
 library(sas7bdat) #Loads the package that allows for sas data import
-nhanesFullData = read.sas7bdat("dxa_bmx.sas7bdat")
-#keeps only certain columns in new data set
-nhanesBodyComp <- nhanesFullData[,c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
+nhanesMortData = read.sas7bdat("dxa_bmx_lab_ques_mort.sas7bdat")
+
+
+nhanesData = read.sas7bdat("dxa_bmx.sas7bdat")
+
+Mort <- nhanesMortData[,c("SEQN","MORTSTAT")]
+
+
+nhanesBodyComp <- nhanesMortData[,c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
                                     "DXXTRFAT", "DXXTRLI", "DXDTRPF",
                                     "DXXLAFAT", "DXXLALI", "DXDLAPF",
                                     "DXXLLFAT", "DXXLLLI", "DXDLLPF",
                                     "DXXRLFAT", "DXXRLLI", "DXDRLPF",
                                     "DXXRAFAT", "DXXRALI", "DXDRAPF",
-                                    "DXDTOFAT", "DXDTOLI", "DXDTOPF")] #Fat = fat mass, #LI = lean + bone PF = percent fat
-#TR = Trunk LA = Left Arm LL = Left Leg RA = right arm
-#RL = right leg
+                                    "DXDTOFAT", "DXDTOLI", "DXDTOPF", "MORTSTAT",
+                                    "LBXGH", "LBXTC")] 
 
-dNhanesClean <- data.frame(nhanesBodyComp) #Convert to data frame
-dNhanesClean1 <- na.omit(dNhanesClean) #Clears any rows that have NA entries (Small number)
+dNhanesClean <- data.frame(nhanesBodyComp) 
+
+dtest <- dNhanesClean[!is.na(dNhanesClean$BMXHT),]
+dtest1 <- dtest[!is.na(dtest$BMXWT),]
+
+dNhanesClean1 <- dtest1
 
 #Calculates avg arm and leg fat and lean, and then FMI/LMI of each segment and avg arm/leg
 dNhanesClean2 <- transform(dNhanesClean1, avgArmFat = (DXXLAFAT + DXXRAFAT) / 2, 
@@ -52,14 +61,22 @@ dNhanesCleanFinal <- transform(dNhanesClean3, avgArmLmi = (avgArmLI/1000) / ((BM
                                rightLegLmi = (DXXRLLI/1000) / ((BMXHT/100)^2),
                                rightArmLmi = (DXXRALI/1000) / ((BMXHT/100)^2),
                                totBodyLmi = (DXDTOLI/1000) / ((BMXHT/100)^2))
-#Keeps only variables we are interested in for producing LMS tables with:
-dNhanesFmiLmi <- dNhanesCleanFinal[,c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
-                                      "avgArmFmi", "avgLegFmi", "trunkFmi",
-                                      "leftArmFmi", "leftLegFmi",
-                                      "rightLegFmi", "rightArmFmi", "totBodyFmi",
-                                      "avgArmLmi", "avgLegLmi", "trunkLmi",
-                                      "leftArmLmi", "leftLegLmi",
-                                      "rightLegLmi", "rightArmLmi", "totBodyLmi")]
+
+
+
+
+
+
+
+dNhanesFmiLmi <- dNhanesCleanFinal   #[,c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
+                                    #  "avgArmFmi", "avgLegFmi", "trunkFmi",
+                                    #  "leftArmFmi", "leftLegFmi",
+                                    #  "rightLegFmi", "rightArmFmi", "totBodyFmi",
+                                    #  "avgArmLmi", "avgLegLmi", "trunkLmi",
+                                    #  "leftArmLmi", "leftLegLmi",
+                                    #  "rightLegLmi", "rightArmLmi", "totBodyLmi", "MORTSTAT")]
+
+
 #Keeps all variables including percent fat, etc. (Not used for LMS, but could be useful later)
 nhanesBlack <- dNhanesCleanFinal[dNhanesCleanFinal[, "Race"] == "Non-Hispanic Black",] 
 nhanesWhite <- dNhanesCleanFinal[dNhanesCleanFinal[, "Race"] == "Non-Hispanic White",] 
@@ -76,7 +93,9 @@ nhanesHispFmiLmi <- subset(dNhanesFmiLmi, dNhanesFmiLmi$Race=="Mexican American"
 #write.csv(nhanesBlackFmiLmi, file = "BlackFmiLmi.csv")
 #write.csv(nhanesWhiteFmiLmi, file = "WhiteFmiLmi.csv")
 #write.csv(nhanesHispFmiLmi, file = "HispFmiLmi.csv")
-#write.csv(nhanesFullData, file = "dxa_bmx.csv")   #to rewrite the entire NHANES database as .csv
+
+
+
 
 #Part 1: Importing Z scores from LMS tables
 #####
@@ -94,15 +113,15 @@ nhanesHispFmiLmi <- subset(dNhanesFmiLmi, dNhanesFmiLmi$Race=="Mexican American"
 #Dataset
 
 #Specifies which columns we will keep from the FMI/LMI data in part 0
-keep <- c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
-          "trunkFmi", "trunkLmi", "leftArmFmi", "leftArmLmi",
-          "rightArmFmi", "rightArmLmi", "leftLegFmi",
-          "leftLegLmi", "rightLegFmi", "rightLegLmi")
+#keep <- c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
+#          "trunkFmi", "trunkLmi", "leftArmFmi", "leftArmLmi",
+#          "rightArmFmi", "rightArmLmi", "leftLegFmi",
+#          "leftLegLmi", "rightLegFmi", "rightLegLmi", "MORTSTAT")
 
 #Inputs:
-nhBlack <- nhanesBlackFmiLmi[keep] #Output from part 0
-nhHisp <- nhanesHispFmiLmi[keep] #Output from part 0
-nhWhite <- nhanesWhiteFmiLmi[keep] #Output from part 0
+nhBlack <- nhanesBlackFmiLmi #Output from part 0
+nhHisp <- nhanesHispFmiLmi#Output from part 0
+nhWhite <- nhanesWhiteFmiLmi #Output from part 0
 setwd("X:\\bhinton\\Data\\LMS Tables\\Zind") # Set the working directory to location
 #of z scores for all demographic types
 
@@ -164,6 +183,10 @@ keep <- c("Age","ZFTrunkFmi", "ZFTrunkLmi","ZFArmFmi","ZFArmLmi",
 dCombinedBlackZ3 <- dCombinedBlackZ2[keep]
 #Contains black male and female trunk,avg arm,avg leg FMI and LMI z scores
 blackLMSZScoreFmiLmi <- cbind(nhBlack, dCombinedBlackZ3)
+
+
+
+
 
 ##Hispanic Data Set##
 #Import of data of individual Z scores #hm = hispanic male
@@ -279,7 +302,130 @@ keep <- c("Age","ZFTrunkFmi", "ZFTrunkLmi","ZFArmFmi","ZFArmLmi",
 dCombinedWhiteZ3 <- dCombinedWhiteZ2[keep]
 #Contains hispanic male and female trunk,avg arm,avg leg FMI and LMI z scores
 whiteLMSZScoreFmiLmi <- cbind(nhWhite, dCombinedWhiteZ3)
-#Importing LMS values and calculating arms/legs
+
+
+
+
+
+##Part 2 get totals
+setwd("X:\\bhinton\\Data\\LMS Tables\\Zind")
+wfTotFmiZ <- read.table("WhiteFmiLmi_Female_TotFMI_Zind_020402t.txt", header=T, sep="\t")
+wmTotFmiZ <- read.table("WhiteFmiLmi_Male_TotFMI_Zind_020402t.txt", header=T, sep="\t")
+wfTotLmiZ <- read.table("WhiteFmiLmi_Female_TotLMI_Zind_010401t.txt", header=T, sep="\t")
+wmTotLmiZ <- read.table("WhiteFmiLmi_Male_TotLMI_Zind_020702t.txt", header=T, sep="\t")
+
+bfTotFmiZ <- read.table("BlackFmiLmi_Female_TotFMI_Zind_020302t.txt", header=T, sep="\t")
+bmTotFmiZ <- read.table("BlackFmiLmi_Male_TotFMI_Zind_020401t.txt", header=T, sep="\t")
+bfTotLmiZ <- read.table("BlackFmiLmi_Female_TotLMI_Zind_010401t.txt", header=T, sep="\t")
+bmTotLmiZ <- read.table("BlackFmiLmi_Male_TotLMI_Zind_020601t.txt", header=T, sep="\t")
+
+hfTotFmiZ <- read.table("HispFmiLmi_Female_TotFMI_Zind_020402t.txt", header=T, sep="\t")
+hmTotFmiZ <- read.table("HispFmiLmi_Male_TotFMI_Zind_020402t.txt", header=T, sep="\t")
+hfTotLmiZ <- read.table("HispFmiLmi_Female_TotLMI_Zind_020601t.txt", header=T, sep="\t")
+hmTotLmiZ <- read.table("HispFmiLmi_Male_TotLMI_Zind_010702t.txt", header=T, sep="\t")
+
+aCombinedWhiteZ <- cbind(wfTotFmiZ,wmTotFmiZ,wfTotLmiZ,wmTotLmiZ)
+
+adCombinedWhiteZ <- data.frame(aCombinedWhiteZ)
+
+keep <- c(1, 3, 6, 9, 12)
+adCombinedWhiteZ2 <- adCombinedWhiteZ[keep]
+colnames(adCombinedWhiteZ2) <- c("Age", "ZFTotFmi", "ZMTotFmi", "ZFTotLmi",
+                                "ZMTotLmi")
+#Replaces all * as NA in data set 
+adCombinedWhiteZ2 <- as.data.frame(sapply(adCombinedWhiteZ2,sub,pattern='\\*',replacement=NA))
+#More data treating (need to change type of column as not a factor)
+unfactorize<-c("Age", "ZFTotFmi", "ZMTotFmi", "ZFTotLmi",
+               "ZMTotLmi")
+adCombinedWhiteZ2[,unfactorize] <- 
+  as.numeric(as.character(unlist(adCombinedWhiteZ2[,unfactorize])))
+#Combines the columns of male region and female region fmi/lmi
+adCombinedWhiteZ2 <- transform(adCombinedWhiteZ2, 
+                              ZFTotFmi= pmax(ZFTotFmi, ZMTotFmi, na.rm=TRUE), 
+                              ZFTotLmi= pmax(ZFTotLmi, ZMTotLmi, na.rm=TRUE))
+#Labels male rows as males and female rows as female
+adCombinedWhiteZ2$Gender1[is.na(adCombinedWhiteZ2$ZMTotFmi)] <- "Female"
+adCombinedWhiteZ2$Gender1[!is.na(adCombinedWhiteZ2$ZMTotFmi)] <- "Male"
+#keeps only the columns that combined the separate male/female columns into one
+keep <- c("Age","ZFTotFmi", "ZFTotLmi","Gender1")
+adCombinedWhiteZ3 <- adCombinedWhiteZ2[keep]
+#Contains hispanic male and female trunk,avg arm,avg leg FMI and LMI z scores
+WhiteFinished <- cbind(whiteLMSZScoreFmiLmi, adCombinedWhiteZ3)
+
+
+###
+
+
+aCombinedHispZ <- cbind(hfTotFmiZ,hmTotFmiZ,hfTotLmiZ,hmTotLmiZ)
+
+adCombinedHispZ <- data.frame(aCombinedHispZ)
+
+keep <- c(1, 3, 6, 9, 12)
+adCombinedHispZ2 <- adCombinedHispZ[keep]
+colnames(adCombinedHispZ2) <- c("Age", "ZFTotFmi", "ZMTotFmi", "ZFTotLmi",
+                                 "ZMTotLmi")
+#Replaces all * as NA in data set 
+adCombinedHispZ2 <- as.data.frame(sapply(adCombinedHispZ2,sub,pattern='\\*',replacement=NA))
+#More data treating (need to change type of column as not a factor)
+unfactorize<-c("Age", "ZFTotFmi", "ZMTotFmi", "ZFTotLmi",
+               "ZMTotLmi")
+adCombinedHispZ2[,unfactorize] <- 
+  as.numeric(as.character(unlist(adCombinedHispZ2[,unfactorize])))
+#Combines the columns of male region and female region fmi/lmi
+adCombinedHispZ2 <- transform(adCombinedHispZ2, 
+                               ZFTotFmi= pmax(ZFTotFmi, ZMTotFmi, na.rm=TRUE), 
+                               ZFTotLmi= pmax(ZFTotLmi, ZMTotLmi, na.rm=TRUE))
+#Labels male rows as males and female rows as female
+adCombinedHispZ2$Gender1[is.na(adCombinedHispZ2$ZMTotFmi)] <- "Female"
+adCombinedHispZ2$Gender1[!is.na(adCombinedHispZ2$ZMTotFmi)] <- "Male"
+#keeps only the columns that combined the separate male/female columns into one
+keep <- c("Age","ZFTotFmi", "ZFTotLmi","Gender1")
+adCombinedHispZ3 <- adCombinedHispZ2[keep]
+#Contains hispanic male and female trunk,avg arm,avg leg FMI and LMI z scores
+HispFinished <- cbind(hispLMSZScoreFmiLmi, adCombinedHispZ3)
+
+
+
+
+###
+
+
+aCombinedBlackZ <- cbind(bfTotFmiZ,bmTotFmiZ,bfTotLmiZ,bmTotLmiZ)
+
+adCombinedBlackZ <- data.frame(aCombinedBlackZ)
+
+keep <- c(1, 3, 6, 9, 12)
+adCombinedBlackZ2 <- adCombinedBlackZ[keep]
+colnames(adCombinedBlackZ2) <- c("Age", "ZFTotFmi", "ZMTotFmi", "ZFTotLmi",
+                                "ZMTotLmi")
+#Replaces all * as NA in data set 
+adCombinedBlackZ2 <- as.data.frame(sapply(adCombinedBlackZ2,sub,pattern='\\*',replacement=NA))
+#More data treating (need to change type of column as not a factor)
+unfactorize<-c("Age", "ZFTotFmi", "ZMTotFmi", "ZFTotLmi",
+               "ZMTotLmi")
+adCombinedBlackZ2[,unfactorize] <- 
+  as.numeric(as.character(unlist(adCombinedBlackZ2[,unfactorize])))
+#Combines the columns of male region and female region fmi/lmi
+adCombinedBlackZ2 <- transform(adCombinedBlackZ2, 
+                              ZFTotFmi= pmax(ZFTotFmi, ZMTotFmi, na.rm=TRUE), 
+                              ZFTotLmi= pmax(ZFTotLmi, ZMTotLmi, na.rm=TRUE))
+#Labels male rows as males and female rows as female
+adCombinedBlackZ2$Gender1[is.na(adCombinedBlackZ2$ZMTotFmi)] <- "Female"
+adCombinedBlackZ2$Gender1[!is.na(adCombinedBlackZ2$ZMTotFmi)] <- "Male"
+#keeps only the columns that combined the separate male/female columns into one
+keep <- c("Age","ZFTotFmi", "ZFTotLmi","Gender1")
+adCombinedBlackZ3 <- adCombinedBlackZ2[keep]
+#Contains Blackanic male and female trunk,avg arm,avg leg FMI and LMI z scores
+BlackFinished <- cbind(blackLMSZScoreFmiLmi, adCombinedBlackZ3)
+
+
+
+
+
+
+
+
+
 #####
 #                                        #
 #                                        #
@@ -379,7 +525,7 @@ wmLms <- cbind(wmArmFmiLms[keep], wmArmLmiLms[keep],
 for (i in 1:3){#Ethnicity, normally 1:3
   zScoreFinal = NULL
   for (j in 1:2){#Gender, normally 1:2
-    if (i == 1) {zScore = blackLMSZScoreFmiLmi #Black arm and leg FMI/LMI data
+    if (i == 1) {zScore = BlackFinished #Black arm and leg FMI/LMI data
     race = "Black"
     if (j == 1) {lmsChart = bfLms
     gender = "Female" #Female
@@ -387,7 +533,7 @@ for (i in 1:3){#Ethnicity, normally 1:3
     else if (j == 2) {lmsChart = bmLms
     gender = "Male"#Male
     }
-    } else if (i == 2) {zScore = hispLMSZScoreFmiLmi #Hisp arm and leg FMI/LMI data
+    } else if (i == 2) {zScore = HispFinished #Hisp arm and leg FMI/LMI data
     race = "Hisp"
     if (j == 1) {lmsChart = hfLms
     gender = "Female"#Female
@@ -395,7 +541,7 @@ for (i in 1:3){#Ethnicity, normally 1:3
     else if (j == 2) {lmsChart = hmLms
     gender = "Male"#Male
     }
-    } else if (i == 3) {zScore = whiteLMSZScoreFmiLmi #White arm and leg FMI/LMI data
+    } else if (i == 3) {zScore = WhiteFinished #White arm and leg FMI/LMI data
     race = "White"
     if (j == 1) {lmsChart = wfLms
     gender = "Female"#Female
@@ -442,14 +588,29 @@ for (i in 1:3){#Ethnicity, normally 1:3
       )
       
       #Keeps only th                   
-      keep <- c("Race","Gender", "BMXHT","BMXWT","RIDAGEYR",
-                "ZFTrunkFmi","ZFTrunkLmi", "zLArmFmi","zRArmFmi",
-                "zLArmLmi","zRArmLmi","zLLegFmi","zRLegFmi",
-                "zLLegLmi", "zRLegLmi", "zAvgFmi", "zAvgLmi")
-      zScore5 <- zScore4[keep]
+      #keep <- c("Race","Gender", "BMXHT","BMXWT","RIDAGEYR",
+      #          "ZFTrunkFmi","ZFTrunkLmi", "zLArmFmi","zRArmFmi",
+       #         "zLArmLmi","zRArmLmi","zLLegFmi","zRLegFmi",
+        #        "zLLegLmi", "zRLegLmi", "zAvgFmi", "zAvgLmi")
+      zScore5 <- zScore4#[keep]
       #Changes column names to create the radar charts later on
       colnames(zScore5) <- c("Race", "Gender", "Height", "Weight", "Age",
-                             "Z_FMI_TR", "Z_LMI_TR", "Z_FMI_LA", "Z_FMI_RA",
+                             "TrunkFat", "TrunkLean", "TrunkPfat",
+                             "LarmFat", "LarmLean", "LarmPfat",
+                             "LlegFat", "LlegLean", "LlegPfat",
+                             "RlegFat", "RlegLean", "RlegPfat",
+                             "RarmFat", "RarmLean", "RarmPfat",
+                             "TotFat", "TotLean", "TotPfat",
+                             "Mort", "GH_Ha1c", "TC_Cholest", #"20ftWalk",
+                             "AvgArmFat", "AvgLegFat", "AvgArmLean", "AvgLegLean",
+                             "AvgArmFmi", "AvgLegFmi", "TrunkFmi",
+                             "LArmFmi","LLegFmi","RLegFmi","RArmFmi", "TotBodyFmi",
+                             "AvgArmLmi", "AvgLegLmi", "TrunkLmi",
+                             "LArmLmi","LLegLmi","RLegLmi","RArmLmi", "TotBodyLmi",
+                             "Age1","Z_FMI_TR", "Z_LMI_TR",
+                             "ZarmFMI", "ZArmLMI", "ZLegFMI", "ZLegLMI",
+                             "Gender1", "Age2", "Z_TOT_FMI", "Z_TOT_LMI", "Gender3",
+                              "Z_FMI_LA", "Z_FMI_RA",
                              "Z_LMI_LA","Z_LMI_RA", "Z_FMI_LL", "Z_FMI_RL",
                              "Z_LMI_LL", "Z_LMI_RL","Z_FMI_AVG", "Z_LMI_AVG")
       
@@ -465,10 +626,10 @@ for (i in 1:3){#Ethnicity, normally 1:3
   
   
   #calculates the standard deviation for the FMI and LMI for each individual
-  fmiZSd <- data.frame(SD(t(zScoreFinal[,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")])))
+  fmiZSd <- data.frame(sd(t(zScoreFinal[,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")])))
   #fmiZSd <- data.frame(sd(t(zScoreFinal[,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")])))
   colnames(fmiZSd) <- "Z_FMI_SD"
-  lmiZSd <- data.frame(SD(t(zScoreFinal[,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")])))
+  lmiZSd <- data.frame(sd(t(zScoreFinal[,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")])))
   #lmiZSd <- data.frame(sd(t(zScoreFinal[,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")])))
   colnames(lmiZSd) <- "Z_LMI_SD"
   #Adds this Sd value in with the right/left arm/leg lmi/fmi calculations
@@ -477,9 +638,20 @@ for (i in 1:3){#Ethnicity, normally 1:3
   #Optionally:
   #the two commented out lines below this would write each of these tables to a .txt
   #by race
-  #setwd("X:\\bhinton")
-  #write.table(zScoreFinal, file=sprintf("%s.ZScoreValues.txt",race))
+  setwd("X:\\bhinton")
+  write.table(zScoreFinal, file=sprintf("%s.MortZScoreValues.txt",race))
   #Activate this to write to a new table (Will need to do this for averages)
   
 }#End of cycle through races
 
+
+
+##Part 2
+
+setwd("X:\\bhinton") 
+
+ZScoreFmiLmi <- rbind(WhiteFinished, BlackFinished, HispFinished)
+Test <- data.frame(ZScoreFmiLmi) #Convert to data frame
+ZScoresFinal <- na.omit(Test)
+
+write.csv(ZScoresFinal, file = "ZMortFinal.csv")
