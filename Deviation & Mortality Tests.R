@@ -136,6 +136,17 @@ t.test(allYouthAllHealthy[,c("ZFMI_SD")],allYouthAllHealthy[,c("ZLMI_SD")],paire
 cor(allYouthAllHealthy[,FmiRegions],allYouthAllHealthy[,FmiRegions])
 cor(allYouthAllHealthy[,LmiRegions],allYouthAllHealthy[,LmiRegions])
 
+t.test(allYouthUnder[,c("ZFMI_SD")],allYouthUnder[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthHealthy[,c("ZFMI_SD")],allYouthHealthy[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthOverweight[,c("ZFMI_SD")],allYouthOverweight[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthObese1[,c("ZFMI_SD")],allYouthObese1[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthObese2[,c("ZFMI_SD")],allYouthObese2[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthObese3[,c("ZFMI_SD")],allYouthObese3[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthAllObese[,c("ZFMI_SD")],allYouthAllObese[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthAllHealthy[,c("ZFMI_SD")],allYouthAllHealthy[,c("ZLMI_SD")],paired=FALSE)
+
+
+
 allAdultUnder <- subset(allAdult, allAdult$BMI <= 18.5)
 allAdultHealthy <- subset(allAdult, allAdult$BMI < 25 & allAdult$BMI > 18.5)
 allAdultOverweight <- subset(allAdult, allAdult$BMI < 30 & allAdult$BMI > 25)
@@ -146,31 +157,41 @@ allAdultAllObese <- subset(allAdult, allAdult$BMI > 30)
 allAdultAllHealthy <- subset(allAdult, allAdult$BMI < 30)
 
 
-t.test(allAdultUnder[,c("ZFMI_SD")],allAdultUnder[,c("ZLMI_SD")],paired=TRUE)
+t.test(allAdultUnder[,c("ZFMI_SD")],allAdultUnder[,c("ZLMI_SD")],paired=FALSE)
 cor(allAdultUnder[,FmiRegions],allAdultUnder[,FmiRegions])
 cor(allAdultUnder[,LmiRegions],allAdultUnder[,LmiRegions])
-t.test(allAdultHealthy[,c("ZFMI_SD")],allAdultHealthy[,c("ZLMI_SD")],paired=TRUE)
+t.test(allAdultHealthy[,c("ZFMI_SD")],allAdultHealthy[,c("ZLMI_SD")],paired=FALSE)
 cor(allAdultHealthy[,FmiRegions],allAdultHealthy[,FmiRegions])
 cor(allAdultHealthy[,LmiRegions],allAdultHealthy[,LmiRegions])
-t.test(allAdultOverweight[,c("ZFMI_SD")],allAdultOverweight[,c("ZLMI_SD")],paired=TRUE)
+t.test(allAdultOverweight[,c("ZFMI_SD")],allAdultOverweight[,c("ZLMI_SD")],paired=FALSE)
 cor(allAdultOverweight[,FmiRegions],allAdultOverweight[,FmiRegions])
 cor(allAdultOverweight[,LmiRegions],allAdultOverweight[,LmiRegions])
-t.test(allAdultObese1[,c("ZFMI_SD")],allAdultObese1[,c("ZLMI_SD")],paired=TRUE)
+t.test(allAdultObese1[,c("ZFMI_SD")],allAdultObese1[,c("ZLMI_SD")],paired=FALSE)
 cor(allAdultObese1[,FmiRegions],allAdultObese1[,FmiRegions])
 cor(allAdultObese1[,LmiRegions],allAdultObese1[,LmiRegions])
-t.test(allAdultObese2[,c("ZFMI_SD")],allAdultObese2[,c("ZLMI_SD")],paired=TRUE)
+t.test(allAdultObese2[,c("ZFMI_SD")],allAdultObese2[,c("ZLMI_SD")],paired=FALSE)
 cor(allAdultObese2[,FmiRegions],allAdultObese2[,FmiRegions])
 cor(allAdultObese2[,LmiRegions],allAdultObese2[,LmiRegions])
-t.test(allAdultObese3[,c("ZFMI_SD")],allAdultObese3[,c("ZLMI_SD")],paired=TRUE)
+t.test(allAdultObese3[,c("ZFMI_SD")],allAdultObese3[,c("ZLMI_SD")],paired=FALSE)
 cor(allAdultObese3[,FmiRegions],allAdultObese3[,FmiRegions])
 cor(allAdultObese3[,LmiRegions],allAdultObese3[,LmiRegions])
-t.test(allAdultAllObese[,c("ZFMI_SD")],allAdultAllObese[,c("ZLMI_SD")],paired=TRUE)
+t.test(allAdultAllObese[,c("ZFMI_SD")],allAdultAllObese[,c("ZLMI_SD")],paired=FALSE)
 cor(allAdultAllObese[,FmiRegions],allAdultAllObese[,FmiRegions])
 cor(allAdultAllObese[,LmiRegions],allAdultAllObese[,LmiRegions])
-t.test(allAdultAllHealthy[,c("ZFMI_SD")],allAdultAllHealthy[,c("ZLMI_SD")],paired=TRUE)
+t.test(allAdultAllHealthy[,c("ZFMI_SD")],allAdultAllHealthy[,c("ZLMI_SD")],paired=FALSE)
 cor(allAdultAllHealthy[,FmiRegions],allAdultAllHealthy[,FmiRegions])
 cor(allAdultAllHealthy[,LmiRegions],allAdultAllHealthy[,LmiRegions])
 
+
+
+t.test(allAdultUnder[,c("ZFMI_SD")],allAdultUnder[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultHealthy[,c("ZFMI_SD")],allAdultHealthy[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultOverweight[,c("ZFMI_SD")],allAdultOverweight[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultObese1[,c("ZFMI_SD")],allAdultObese1[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultObese2[,c("ZFMI_SD")],allAdultObese2[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultObese3[,c("ZFMI_SD")],allAdultObese3[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultAllObese[,c("ZFMI_SD")],allAdultAllObese[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultAllHealthy[,c("ZFMI_SD")],allAdultAllHealthy[,c("ZLMI_SD")],paired=FALSE)
 
 
 
@@ -234,6 +255,21 @@ cor(allYouthFemale[,LmiRegions],allYouthFemale[,LmiRegions])
 
 
 
+t.test(allYouthMaleWhite[,c("ZFMI_SD")],allYouthMaleWhite[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthMaleBlack[,c("ZFMI_SD")],allYouthMaleBlack[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthMaleHisp[,c("ZFMI_SD")],allYouthMaleHisp[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthFemaleWhite[,c("ZFMI_SD")],allYouthFemaleWhite[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthFemaleBlack[,c("ZFMI_SD")],allYouthFemaleBlack[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthFemaleHisp[,c("ZFMI_SD")],allYouthFemaleHisp[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthMale[,c("ZFMI_SD")],allYouthMale[,c("ZLMI_SD")],paired=FALSE)
+t.test(allYouthFemale[,c("ZFMI_SD")],allYouthFemale[,c("ZLMI_SD")],paired=FALSE)
+
+
+
+
+
+
+
 
 #Split into Ethnicity/Gender ranges - adult
 
@@ -288,6 +324,20 @@ t.test(allAdultFemale[,c("ZFMI_SD")],allAdultFemale[,c("ZLMI_SD")],paired=TRUE)
 cor(allAdultFemale[,FmiRegions],allAdultFemale[,FmiRegions])
 cor(allAdultFemale[,LmiRegions],allAdultFemale[,LmiRegions])
 
+
+
+
+
+t.test(allAdultMaleWhite[,c("ZFMI_SD")],allAdultMaleWhite[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultMaleBlack[,c("ZFMI_SD")],allAdultMaleBlack[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultMaleHisp[,c("ZFMI_SD")],allAdultMaleHisp[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultFemaleWhite[,c("ZFMI_SD")],allAdultFemaleWhite[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultFemaleBlack[,c("ZFMI_SD")],allAdultFemaleBlack[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultFemaleHisp[,c("ZFMI_SD")],allAdultFemaleHisp[,c("ZLMI_SD")],paired=FALSE)
+
+
+t.test(allAdultMale[,c("ZFMI_SD")],allAdultMale[,c("ZLMI_SD")],paired=FALSE)
+t.test(allAdultFemale[,c("ZFMI_SD")],allAdultFemale[,c("ZLMI_SD")],paired=FALSE)
 
 
 
