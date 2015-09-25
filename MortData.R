@@ -17,7 +17,7 @@ library(sas7bdat) #Loads the package that allows for sas data import
 nhanesMortData = read.sas7bdat("dxa_bmx_lab_ques_mort.sas7bdat")
 
 
-nhanesData = read.sas7bdat("dxa_bmx.sas7bdat")
+#nhanesData = read.sas7bdat("dxa_bmx.sas7bdat")
 
 Mort <- nhanesMortData[,c("SEQN","MORTSTAT")]
 
@@ -29,7 +29,7 @@ nhanesBodyComp <- nhanesMortData[,c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR
                                     "DXXRLFAT", "DXXRLLI", "DXDRLPF",
                                     "DXXRAFAT", "DXXRALI", "DXDRAPF",
                                     "DXDTOFAT", "DXDTOLI", "DXDTOPF", "MORTSTAT",
-                                    "LBXGH", "LBXTC")] 
+                                    "LBXGH", "LBXTC", "LBXGLU")] 
 
 dNhanesClean <- data.frame(nhanesBodyComp) 
 
@@ -600,7 +600,7 @@ for (i in 1:3){#Ethnicity, normally 1:3
                              "RlegFat", "RlegLean", "RlegPfat",
                              "RarmFat", "RarmLean", "RarmPfat",
                              "TotFat", "TotLean", "TotPfat",
-                             "Mort", "GH_Ha1c", "TC_Cholest", #"20ftWalk",
+                             "Mort", "GH_Ha1c", "TC_Cholest", "Glucose", #20ftwalk
                              "AvgArmFat", "AvgLegFat", "AvgArmLean", "AvgLegLean",
                              "AvgArmFmi", "AvgLegFmi", "TrunkFmi",
                              "LArmFmi","LLegFmi","RLegFmi","RArmFmi", "TotBodyFmi",
@@ -638,7 +638,7 @@ for (i in 1:3){#Ethnicity, normally 1:3
   #the two commented out lines below this would write each of these tables to a .txt
   #by race
   setwd("X:\\bhinton")
-  write.table(zScoreFinal, file=sprintf("%s.MortZScoreValues.txt",race))
+  write.table(zScoreFinal, file=sprintf("%s.MortZScoreValues3.txt",race))
   #Activate this to write to a new table (Will need to do this for averages)
   
 }#End of cycle through races
@@ -653,4 +653,4 @@ ZScoreFmiLmi <- rbind(WhiteFinished, BlackFinished, HispFinished)
 Test <- data.frame(ZScoreFmiLmi) #Convert to data frame
 ZScoresFinal <- na.omit(Test)
 
-write.csv(ZScoresFinal, file = "ZMortFinal.csv")
+write.csv(ZScoresFinal, file = "ZMortFinal3.csv")
