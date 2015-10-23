@@ -9,19 +9,42 @@ maxmin <- data.frame(
 
 chartDim <- c(1,1)
 
-blackData <- read.table(file=sprintf("data/Black.ZScoreValues.txt", sep="\t"))
-hispData <- read.table(file=sprintf("data/Hisp.ZScoreValues.txt", sep="\t"))
-whiteData <- read.table(file=sprintf("data/White.ZScoreValues.txt", sep="\t"))
+
+# setwd("C:\\Users\\bhinton\\Documents\\radar_chart\\Radar-App\\data")
+# blackData <- read.table(file=sprintf("Black.MortZScoreValues4.txt", sep="\t"))
+# hispData <- read.table(file=sprintf("Hisp.MortZScoreValues4.txt", sep="\t"))
+# whiteData <- read.table(file=sprintf("White.MortZScoreValues4.txt", sep="\t"))
+
+
+
+blackData <- read.table(file=sprintf("data/Black.MortZScoreValues4.txt", sep="\t"))
+hispData <- read.table(file=sprintf("data/Hisp.MortZScoreValues4.txt", sep="\t"))
+whiteData <- read.table(file=sprintf("data/White.MortZScoreValues4.txt", sep="\t"))
 fullData <- rbind(blackData, hispData, whiteData)
+fullData2 <- transform(fullData,
+                       Bmi = TotBodyFmi + TotBodyLmi)
+
+
+hisptotal1 <- transform(hispData,
+                        Bmi = TotBodyFmi + TotBodyLmi)
 
 shinyServer(
   function(input, output) {
 
     output$map <- renderPlot({
 
-      zData2 <- fullData[ which(fullData$Gender==input$gender 
-                                & fullData$Age == input$age 
-                                & fullData$Race==input$race) , ]
+      zData2 <- fullData2[ which(fullData2$Gender==input$gender 
+                                & fullData2$Age == input$age 
+                                & fullData2$Race==input$race) , ]
+      if (input$race=="Hispanic") {
+        zData2 <- hisptotal1[ which(hisptotal1$Gender==input$gender
+                              & hisptotal1$Age == input$age), ]
+        }
+      
+      
+     
+      
+      ntotal <- nrow(zData2)
       
       
       dzData <- data.frame(zData2) 
@@ -48,7 +71,13 @@ shinyServer(
              col=c("goldenrod3", "firebrick4"), bty='n', cex=1.2) 
       
       
-       })
+      output$text1 <- renderText({ 
+        paste("BMI of this individual:", dzData[1,"Bmi" ]) })
+      output$text2 <- renderText({ 
+        paste("Number in this category:", ntotal) })
+        
+      
+     })
       
   }
     )

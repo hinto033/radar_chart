@@ -9,9 +9,9 @@ shinyUI(fluidPage(
       
       selectInput("race", 
                   label = "Choose a race of interest",
-                  choices = c("Non-Hispanic White", "Non-Hispanic Black",
-                              "Hispanic", "Alien"),
-                  selected = "Non-Hispanic White"),
+                  choices = c("White", "Black",
+                              "Hispanic"),
+                  selected = "White"),
       
       selectInput("gender", 
                   label = "Choose a gender of interest",
@@ -30,6 +30,11 @@ shinyUI(fluidPage(
       #Later: options for a certain age range, or options for certian z scores
       ),
     
-    mainPanel(plotOutput("map"))
+    mainPanel(
+      plotOutput("map"),
+      br(),
+      textOutput("text1"),
+      br(),
+      textOutput("text2"))
   )
 ))
