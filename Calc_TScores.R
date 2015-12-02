@@ -3,6 +3,9 @@
 
 setwd("X:\\bhinton")
 
+
+
+
 race = "Black"
 BlackzData <- read.table(file=sprintf("%s.ZScoreValues.txt",race, sep="\t"))
 race = "Hisp"
@@ -38,6 +41,11 @@ refWhiteMalezData <- subset(whiteMalezData,
 
 
 
+
+
+library(fBasics)
+#require('fBasics')
+
 blackFemaleRefMean = colMeans(refBlackFemalezData[,c(3:19)])
 blackMaleRefMean = colMeans(refBlackMalezData[,c(3:19)])
 
@@ -48,8 +56,6 @@ whiteFemaleRefMean = colMeans(refWhiteFemalezData[,c(3:19)])
 whiteMaleRefMean = colMeans(refWhiteMalezData[,c(3:19)])
 
 
-
-#require('fBasics')
 blackFemaleRefStdev = colStdevs(refBlackFemalezData[,c(3:19)])
 blackMaleRefStdev = colStdevs(refBlackMalezData[,c(3:19)])
 
@@ -153,6 +159,11 @@ whiteMaleTScores <- transform(whiteMalezData,
                                 T_LMI_AVG = (Z_LMI_AVG - whiteMaleRefMean['Z_LMI_AVG']) / whiteMaleRefStdev['Z_LMI_AVG']) 
 
 
+
+
+
+
+library(fmsb)
 
 
 

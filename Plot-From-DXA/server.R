@@ -17,7 +17,7 @@ maxmin <- data.frame(
 
 chartDim <- c(1,1)
 
-setwd('X:\\bhinton\\radar_chart\\Plot-From-DXA')
+#setwd('X:\\bhinton\\radar_chart\\Plot-From-DXA')
 
 blackData <- read.table(file=sprintf("data/Black.ZScoreValues.txt", sep="\t"))
 hispData <- read.table(file=sprintf("data/Hisp.ZScoreValues.txt", sep="\t"))
