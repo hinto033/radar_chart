@@ -2,10 +2,10 @@
 library(fmsb)
 maxmin <- data.frame(
   Z_TR=c(2, -2),
-  Z_LA=c(2, -2),
-  Z_LL=c(2, -2),
+  Z_RA=c(2, -2),
   Z_RL=c(2, -2),
-  Z_RA=c(2, -2))
+  Z_LL=c(2, -2),
+  Z_LA=c(2, -2))
 
 chartDim <- c(1,1)
 
@@ -24,6 +24,18 @@ shinyServer(
                                 & fullData$Race==input$race) , ]
       
       
+      if (input$race == "Hispanic"){
+      preTreat = fullData[ which(fullData$Gender==input$gender 
+                                 & fullData$Age == input$age) , ]
+        
+        zData2 <- subset(preTreat, preTreat$Race=="Other Hispanic" | preTreat$Race=="Mexican American")
+                                                   
+                  
+#      subset(dfit3dBase, dfit3dBase$Race=="Hispanic"
+#             | dfit3dBase$Race=="Non-Hispanic Black"
+#             | dfit3dBase$Race == "Non-Hispanic White")
+      }
+      
       dzData <- data.frame(zData2) 
       #print(dzData)
       #print(2)
@@ -32,11 +44,11 @@ shinyServer(
       #dimension <- dim(dzData)
       #nRow <- floor(runif(1, 1,dimension[1]))  #Normally floor(runif(selectNumber, 1,dimension[1]))
       #selects out only those random rows and their FMI/LMI data
-      fmiData <- dzData[1,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")]
-      lmiData <- dzData[1,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")]
+      fmiData <- dzData[1,c("Z_FMI_TR","Z_FMI_RA", "Z_FMI_RL", "Z_FMI_LL", "Z_FMI_LA")]
+      lmiData <- dzData[1,c("Z_LMI_TR","Z_LMI_RA", "Z_LMI_RL", "Z_LMI_LL", "Z_LMI_LA")]
       #renames the columns because column names in fmiData/lmiData must match maxmin
-      colnames(fmiData) <- c("Z_TR", "Z_LA", "Z_LL", "Z_RL", "Z_RA")
-      colnames(lmiData) <- c("Z_TR", "Z_LA", "Z_LL", "Z_RL", "Z_RA")
+      colnames(fmiData) <- c("Z_TR", "Z_RA", "Z_RL", "Z_LL", "Z_LA")
+      colnames(lmiData) <- c("Z_TR", "Z_RA", "Z_RL", "Z_LL", "Z_LA")
       ind1Data <- rbind(maxmin,fmiData[1,],lmiData[1,])   #normally in a loop and i instead of 1
      
       op <- par(mar=c(1, 2, 2, 1),mfrow=chartDim)
