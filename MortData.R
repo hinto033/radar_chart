@@ -23,13 +23,14 @@ Mort <- nhanesMortData[,c("SEQN","MORTSTAT")]
 
 
 nhanesBodyComp <- nhanesMortData[,c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
-                                    "DXXTRFAT", "DXXTRLI", "DXDTRPF",
-                                    "DXXLAFAT", "DXXLALI", "DXDLAPF",
-                                    "DXXLLFAT", "DXXLLLI", "DXDLLPF",
-                                    "DXXRLFAT", "DXXRLLI", "DXDRLPF",
-                                    "DXXRAFAT", "DXXRALI", "DXDRAPF",
-                                    "DXDTOFAT", "DXDTOLI", "DXDTOPF", "MORTSTAT",
-                                    "LBXGH", "LBXTC", "LBXGLU")] 
+                                    "DXXTRFAT", "DXXTRLI", "DXDTRPF", "DXDTRBMC", "DXDTRTOT",
+                                    "DXXLAFAT", "DXXLALI", "DXDLAPF", "DXXLABMC", "DXDLATOT",
+                                    "DXXLLFAT", "DXXLLLI", "DXDLLPF", "DXXLLBMC", "DXDLLTOT",
+                                    "DXXRLFAT", "DXXRLLI", "DXDRLPF", "DXXRLBMC", "DXDRLTOT",
+                                    "DXXRAFAT", "DXXRALI", "DXDRAPF", "DXXRABMC", "DXDRATOT",
+                                    "DXDTOFAT", "DXDTOLI", "DXDTOPF", "DXDTOBMC", "DXDTOTOT", 
+                                    "DXXHEFAT", "DXXHELI", "DXDHEPF", "DXXHEBMC", "DXDHETOT",
+                                    "MORTSTAT", "LBXGH", "LBXTC", "LBXGLU")] 
 
 dNhanesClean <- data.frame(nhanesBodyComp) 
 
@@ -593,25 +594,25 @@ for (i in 1:3){#Ethnicity, normally 1:3
         #        "zLLegLmi", "zRLegLmi", "zAvgFmi", "zAvgLmi")
       zScore5 <- zScore4#[keep]
       #Changes column names to create the radar charts later on
-      colnames(zScore5) <- c("Race", "Gender", "Height", "Weight", "Age",
-                             "TrunkFat", "TrunkLean", "TrunkPfat",
-                             "LarmFat", "LarmLean", "LarmPfat",
-                             "LlegFat", "LlegLean", "LlegPfat",
-                             "RlegFat", "RlegLean", "RlegPfat",
-                             "RarmFat", "RarmLean", "RarmPfat",
-                             "TotFat", "TotLean", "TotPfat",
-                             "Mort", "GH_Ha1c", "TC_Cholest", "Glucose", #20ftwalk
-                             "AvgArmFat", "AvgLegFat", "AvgArmLean", "AvgLegLean",
-                             "AvgArmFmi", "AvgLegFmi", "TrunkFmi",
-                             "LArmFmi","LLegFmi","RLegFmi","RArmFmi", "TotBodyFmi",
-                             "AvgArmLmi", "AvgLegLmi", "TrunkLmi",
-                             "LArmLmi","LLegLmi","RLegLmi","RArmLmi", "TotBodyLmi",
-                             "Age1","Z_FMI_TR", "Z_LMI_TR",
-                             "ZarmFMI", "ZArmLMI", "ZLegFMI", "ZLegLMI",
-                             "Gender1", "Age2", "Z_TOT_FMI", "Z_TOT_LMI", "Gender3",
-                              "Z_FMI_LA", "Z_FMI_RA",
-                             "Z_LMI_LA","Z_LMI_RA", "Z_FMI_LL", "Z_FMI_RL",
-                             "Z_LMI_LL", "Z_LMI_RL","Z_FMI_AVG", "Z_LMI_AVG")
+#       colnames(zScore5) <- c("Race", "Gender", "Height", "Weight", "Age",
+#                              "TrunkFat", "TrunkLean", "TrunkPfat",
+#                              "LarmFat", "LarmLean", "LarmPfat",
+#                              "LlegFat", "LlegLean", "LlegPfat",
+#                              "RlegFat", "RlegLean", "RlegPfat",
+#                              "RarmFat", "RarmLean", "RarmPfat",
+#                              "TotFat", "TotLean", "TotPfat",
+#                              "Mort", "GH_Ha1c", "TC_Cholest", "Glucose", #20ftwalk
+#                              "AvgArmFat", "AvgLegFat", "AvgArmLean", "AvgLegLean",
+#                              "AvgArmFmi", "AvgLegFmi", "TrunkFmi",
+#                              "LArmFmi","LLegFmi","RLegFmi","RArmFmi", "TotBodyFmi",
+#                              "AvgArmLmi", "AvgLegLmi", "TrunkLmi",
+#                              "LArmLmi","LLegLmi","RLegLmi","RArmLmi", "TotBodyLmi",
+#                              "Age1","Z_FMI_TR", "Z_LMI_TR",
+#                              "ZarmFMI", "ZArmLMI", "ZLegFMI", "ZLegLMI",
+#                              "Gender1", "Age2", "Z_TOT_FMI", "Z_TOT_LMI", "Gender3",
+#                               "Z_FMI_LA", "Z_FMI_RA",
+#                              "Z_LMI_LA","Z_LMI_RA", "Z_FMI_LL", "Z_FMI_RL",
+#                              "Z_LMI_LL", "Z_LMI_RL","Z_FMI_AVG", "Z_LMI_AVG")
       
       #stores this data in a dataset for a specific age, and will be added to for
       #each additional age
@@ -625,10 +626,10 @@ for (i in 1:3){#Ethnicity, normally 1:3
   
   
   #calculates the standard deviation for the FMI and LMI for each individual
-  fmiZSd <- data.frame(sd(t(zScoreFinal[,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")])))
+  fmiZSd <- data.frame(sd(t(zScoreFinal[,c("zRLegFmi","zRArmFmi", "zLLegFmi", "zLArmFmi", "ZFTrunkFmi")])))
   #fmiZSd <- data.frame(sd(t(zScoreFinal[,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")])))
   colnames(fmiZSd) <- "Z_FMI_SD"
-  lmiZSd <- data.frame(sd(t(zScoreFinal[,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")])))
+  lmiZSd <- data.frame(sd(t(zScoreFinal[,c("zRLegLmi","zRArmLmi", "zLLegLmi", "zLArmLmi", "ZFTrunkLmi")])))
   #lmiZSd <- data.frame(sd(t(zScoreFinal[,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")])))
   colnames(lmiZSd) <- "Z_LMI_SD"
   #Adds this Sd value in with the right/left arm/leg lmi/fmi calculations
@@ -638,7 +639,7 @@ for (i in 1:3){#Ethnicity, normally 1:3
   #the two commented out lines below this would write each of these tables to a .txt
   #by race
   setwd("X:\\bhinton")
-  write.table(zScoreFinal, file=sprintf("%s.MortZScoreValues3.txt",race))
+  write.table(zScoreFinal, file=sprintf("%s.MortZScoreValues5.txt",race))
   #Activate this to write to a new table (Will need to do this for averages)
   
 }#End of cycle through races
@@ -653,4 +654,4 @@ ZScoreFmiLmi <- rbind(WhiteFinished, BlackFinished, HispFinished)
 Test <- data.frame(ZScoreFmiLmi) #Convert to data frame
 ZScoresFinal <- na.omit(Test)
 
-write.csv(ZScoresFinal, file = "ZMortFinal3.csv")
+write.csv(ZScoresFinal, file = "ZMortFinal5.csv")

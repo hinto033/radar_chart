@@ -18,12 +18,13 @@ library(sas7bdat) #Loads the package that allows for sas data import
 nhanesFullData = read.sas7bdat("dxa_bmx.sas7bdat")
 #keeps only certain columns in new data set
 nhanesBodyComp <- nhanesFullData[,c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
-                                    "DXXTRFAT", "DXXTRLI", "DXDTRPF",
-                                    "DXXLAFAT", "DXXLALI", "DXDLAPF",
-                                    "DXXLLFAT", "DXXLLLI", "DXDLLPF",
-                                    "DXXRLFAT", "DXXRLLI", "DXDRLPF",
-                                    "DXXRAFAT", "DXXRALI", "DXDRAPF",
-                                    "DXDTOFAT", "DXDTOLI", "DXDTOPF")] #Fat = fat mass, #LI = lean + bone PF = percent fat
+                                    "DXXTRFAT", "DXXTRLI", "DXDTRPF", "DXDTRBMC", "DXDTRTOT",
+                                    "DXXLAFAT", "DXXLALI", "DXDLAPF", "DXXLABMC", "DXDLATOT",
+                                    "DXXLLFAT", "DXXLLLI", "DXDLLPF", "DXXLLBMC", "DXDLLTOT",
+                                    "DXXRLFAT", "DXXRLLI", "DXDRLPF", "DXXRLBMC", "DXDRLTOT",
+                                    "DXXRAFAT", "DXXRALI", "DXDRAPF", "DXXRABMC", "DXDRATOT",
+                                    "DXDTOFAT", "DXDTOLI", "DXDTOPF", "DXDTOBMC", "DXDTOTOT",
+                                    "DXXHEFAT", "DXXHELI", "DXDHEPF", "DXXHEBMC", "DXDHETOT")] #Fat = fat mass, #LI = lean + bone PF = percent fat
 #TR = Trunk LA = Left Arm LL = Left Leg RA = right arm
 #RL = right leg
 
@@ -53,13 +54,14 @@ dNhanesCleanFinal <- transform(dNhanesClean3, avgArmLmi = (avgArmLI/1000) / ((BM
                                rightArmLmi = (DXXRALI/1000) / ((BMXHT/100)^2),
                                totBodyLmi = (DXDTOLI/1000) / ((BMXHT/100)^2))
 #Keeps only variables we are interested in for producing LMS tables with:
-dNhanesFmiLmi <- dNhanesCleanFinal[,c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
-                                      "avgArmFmi", "avgLegFmi", "trunkFmi",
-                                      "leftArmFmi", "leftLegFmi",
-                                      "rightLegFmi", "rightArmFmi", "totBodyFmi",
-                                      "avgArmLmi", "avgLegLmi", "trunkLmi",
-                                      "leftArmLmi", "leftLegLmi",
-                                      "rightLegLmi", "rightArmLmi", "totBodyLmi")]
+# dNhanesFmiLmi <- dNhanesCleanFinal[,c("Race","Gender", "BMXHT", "BMXWT", "RIDAGEYR",
+#                                       "avgArmFmi", "avgLegFmi", "trunkFmi",
+#                                       "leftArmFmi", "leftLegFmi",
+#                                       "rightLegFmi", "rightArmFmi", "totBodyFmi",
+#                                       "avgArmLmi", "avgLegLmi", "trunkLmi",
+#                                       "leftArmLmi", "leftLegLmi",
+#                                       "rightLegLmi", "rightArmLmi", "totBodyLmi")]
+dNhanesFmiLmi <- dNhanesCleanFinal
 #Keeps all variables including percent fat, etc. (Not used for LMS, but could be useful later)
 nhanesBlack <- dNhanesCleanFinal[dNhanesCleanFinal[, "Race"] == "Non-Hispanic Black",] 
 nhanesWhite <- dNhanesCleanFinal[dNhanesCleanFinal[, "Race"] == "Non-Hispanic White",] 
@@ -442,16 +444,16 @@ for (i in 1:3){#Ethnicity, normally 1:3
       )
       
       #Keeps only th                   
-      keep <- c("Race","Gender", "BMXHT","BMXWT","RIDAGEYR",
-                "ZFTrunkFmi","ZFTrunkLmi", "zLArmFmi","zRArmFmi",
-                "zLArmLmi","zRArmLmi","zLLegFmi","zRLegFmi",
-                "zLLegLmi", "zRLegLmi", "zAvgFmi", "zAvgLmi")
-      zScore5 <- zScore4[keep]
+      #keep <- c("Race","Gender", "BMXHT","BMXWT","RIDAGEYR",
+#                 "ZFTrunkFmi","ZFTrunkLmi", "zLArmFmi","zRArmFmi",
+#                 "zLArmLmi","zRArmLmi","zLLegFmi","zRLegFmi",
+#                 "zLLegLmi", "zRLegLmi", "zAvgFmi", "zAvgLmi")
+      zScore5 <- zScore4#[keep]
       #Changes column names to create the radar charts later on
-      colnames(zScore5) <- c("Race", "Gender", "Height", "Weight", "Age",
-                             "Z_FMI_TR", "Z_LMI_TR", "Z_FMI_LA", "Z_FMI_RA",
-                             "Z_LMI_LA","Z_LMI_RA", "Z_FMI_LL", "Z_FMI_RL",
-                             "Z_LMI_LL", "Z_LMI_RL","Z_FMI_AVG", "Z_LMI_AVG")
+#       colnames(zScore5) <- c("Race", "Gender", "Height", "Weight", "Age",
+#                              "Z_FMI_TR", "Z_LMI_TR", "Z_FMI_LA", "Z_FMI_RA",
+#                              "Z_LMI_LA","Z_LMI_RA", "Z_FMI_LL", "Z_FMI_RL",
+#                              "Z_LMI_LL", "Z_LMI_RL","Z_FMI_AVG", "Z_LMI_AVG")
       
       #stores this data in a dataset for a specific age, and will be added to for
       #each additional age
@@ -465,20 +467,20 @@ for (i in 1:3){#Ethnicity, normally 1:3
   
   
   #calculates the standard deviation for the FMI and LMI for each individual
-  fmiZSd <- data.frame(SD(t(zScoreFinal[,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")])))
+  # fmiZSd <- data.frame(SD(t(zScoreFinal[,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")])))
   #fmiZSd <- data.frame(sd(t(zScoreFinal[,c("Z_FMI_TR","Z_FMI_LA", "Z_FMI_LL", "Z_FMI_RL", "Z_FMI_RA")])))
-  colnames(fmiZSd) <- "Z_FMI_SD"
-  lmiZSd <- data.frame(SD(t(zScoreFinal[,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")])))
+  # colnames(fmiZSd) <- "Z_FMI_SD"
+  # lmiZSd <- data.frame(SD(t(zScoreFinal[,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")])))
   #lmiZSd <- data.frame(sd(t(zScoreFinal[,c("Z_LMI_TR","Z_LMI_LA", "Z_LMI_LL", "Z_LMI_RL", "Z_LMI_RA")])))
-  colnames(lmiZSd) <- "Z_LMI_SD"
+  # colnames(lmiZSd) <- "Z_LMI_SD"
   #Adds this Sd value in with the right/left arm/leg lmi/fmi calculations
-  zScoreFinal <- cbind(zScoreFinal, fmiZSd, lmiZSd)
+  # zScoreFinal <- cbind(zScoreFinal, fmiZSd, lmiZSd)
   
   #Optionally:
   #the two commented out lines below this would write each of these tables to a .txt
   #by race
-  #setwd("X:\\bhinton")
-  #write.table(zScoreFinal, file=sprintf("%s.ZScoreValues.txt",race))
+  setwd("X:\\bhinton")
+  write.table(zScoreFinal, file=sprintf("%s.ZScoreValuesTEST.txt",race), sep = "\t")
   #Activate this to write to a new table (Will need to do this for averages)
   
 }#End of cycle through races
