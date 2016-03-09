@@ -172,9 +172,7 @@ shinyServer(
                                 & fullData$zTotalLmi>=input$LMIMIN
                                 & fullData$BMI<=input$BMIMAX 
                                 & fullData$zTotalFmi <= input$FMIMAX 
-                                & fullData$zTotalLmi<=input$LMIMAX
-                                & fullData$Z_FMI_AVG>=0.8
-                                & fullData$Z_LMI_AVG<=-0.4), ]
+                                & fullData$zTotalLmi<=input$LMIMAX), ]
       
 
 #       
