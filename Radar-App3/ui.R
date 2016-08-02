@@ -42,8 +42,9 @@ shinyUI(fluidPage(
                   min = -3, max = 3, value = 1,step = 0.1),
       
       sliderInput("LMIMAX", label = "Max ZLMI" ,
-                  min = -3, max = 3, value = 1,step = 0.1)
-      
+                  min = -3, max = 3, value = 1,step = 0.1),
+      sliderInput("nInd", label = "IndividualNumber" ,
+                  min = 1, max = 1000, value = 1,step = 1)
       #Later: options for a certain age range, or options for certian z scores
       ),
     

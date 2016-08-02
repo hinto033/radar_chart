@@ -180,7 +180,7 @@ shinyServer(
 #                                 & fullData$totBodyFmi >= 5
 #                                 & fullData$totBodyLmi>=2) , ]
       
-      zData2 <- zData2[1,]
+      zData2 <- zData2[input$nInd,]
       print(zData2$BMI)
       print(zData2$totBodyFmi)
       print(zData2$totBodyLmi)
@@ -237,7 +237,7 @@ shinyServer(
       
       
       
-      zData2 <- zData2[1,]
+      zData2 <- zData2[input$nInd,]
       paste("BMI/FMI/LMI/%FMI/%LMI: ", zData2$BMI, zData2$totBodyFmi, zData2$totBodyLmi,zData2$zTotalFmi, zData2$zTotalLmi)
       
     })
