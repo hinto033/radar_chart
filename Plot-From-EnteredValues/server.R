@@ -10,13 +10,6 @@
 #Work on the ui.r
 #Think about R Shiny widget types to use.
 
-
-# blackData <- read.table(file=sprintf("data/Black.ZScoreValues.txt", sep="\t"))
-# hispData <- read.table(file=sprintf("data/Hisp.ZScoreValues.txt", sep="\t"))
-# whiteData <- read.table(file=sprintf("data/White.ZScoreValues.txt", sep="\t"))
-# fullData <- rbind(blackData, hispData, whiteData)
-#Maybe have 2 sidebar panels
-
 #  Formula to convert from FMI/LMI value (y) to FMI/LMI z score (z)
 # z = ( y / m)^L - 1 / (L*S)
 
@@ -133,6 +126,10 @@ chartDim <- c(1,1)
 #Beginning of Graphing
 shinyServer(
   function(input, output) {
+    
+
+    
+    
     output$map <- renderPlot({
       hfLms <- cbind(hfArmFmiLms[keep], hfArmLmiLms[keep], 
                      hfLegFmiLms[keep], hfLegLmiLms[keep],
@@ -174,28 +171,33 @@ shinyServer(
       age = input$AgeYr
       
       #Calculate FMI/LMI from that.
-      trunkFmi = (TRUNK_FAT/1000) / ((height_cm/100)^2)
-      leftArmFmi = (LARM_FAT/1000) / ((height_cm/100)^2)
-      leftLegFmi = (L_LEG_FAT/1000) / ((height_cm/100)^2)
-      rightLegFmi = (R_LEG_FAT/1000) / ((height_cm/100)^2)
-      rightArmFmi = (RARM_FAT/1000) / ((height_cm/100)^2)
-      trunkLmi = (TRUNK_LEAN/1000) / ((height_cm/100)^2)
-      leftArmLmi = (LARM_LEAN/1000) / ((height_cm/100)^2)
-      leftLegLmi = (L_LEG_LEAN/1000) / ((height_cm/100)^2)
-      rightLegLmi = (R_LEG_LEAN/1000) / ((height_cm/100)^2)
-      rightArmLmi = (RARM_LEAN/1000) / ((height_cm/100)^2)
+      trunkFmi = (TRUNK_FAT) / ((height_cm/100)^2)  #Divide values by 1000 if I change to a grams input
+      leftArmFmi = (LARM_FAT) / ((height_cm/100)^2)
+      leftLegFmi = (L_LEG_FAT) / ((height_cm/100)^2)
+      rightLegFmi = (R_LEG_FAT) / ((height_cm/100)^2)
+      rightArmFmi = (RARM_FAT) / ((height_cm/100)^2)
+      trunkLmi = (TRUNK_LEAN) / ((height_cm/100)^2)
+      leftArmLmi = (LARM_LEAN) / ((height_cm/100)^2)
+      leftLegLmi = (L_LEG_LEAN) / ((height_cm/100)^2)
+      rightLegLmi = (R_LEG_LEAN) / ((height_cm/100)^2)
+      rightArmLmi = (RARM_LEAN) / ((height_cm/100)^2)
       
       if (race == 3){
         racePrefix = 'b'
+        raceFull = 'black'
       }else if (race == 2){
         racePrefix = 'w'
+        raceFull = 'white'
       }else if (race == 1){
         racePrefix = 'h'
+        raceFull = 'Hispanic'
       }
       if (gender == 2){
         genderPrefix = 'm'
+        genderFull = 'male'
       }else if (gender == 1){
         genderPrefix = 'f'
+        genderFull = 'female'
       }
       #Find the appropriate LMS Table absed on the gender/ethnicity choice
       frames <- c(sprintf("%s%sLms", racePrefix, genderPrefix))
@@ -251,11 +253,47 @@ shinyServer(
       ind1Data <- rbind(maxmin,fmiData[1,],lmiData[1,])   #normally in a loop and i instead of 1
       #Plots the radar chart data
       op <- par(mar=c(1, 2, 2, 1),mfrow=chartDim)
-      radarchart(ind1Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
+      test1 <- radarchart(ind1Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
                  pcol = c("goldenrod3", "firebrick4"),
                  vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
                  title="Individual FMI/LMI Chart")
       legend('topright', c("FMI", "LMI") , lwd=2, 
              col=c("goldenrod3", "firebrick4"), bty='n', cex=1.2) 
+      
+      
+      
+      observeEvent(input$saveAction, {
+        
+        #select save folder
+        
+        #Arrange save data
+        
+        #Save the thing/plot/whatever.
+        pdf(file = "myPlot.pdf", height = 11, width = 8.5)
+        test0 <- print('iloveyou')
+        test1 <- radarchart(ind1Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2,
+                            pcol = c("goldenrod3", "firebrick4"),
+                            vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
+                            title="Individual FMI/LMI Chart")
+        legend('topright', c("FMI", "LMI") , lwd=2, 
+               col=c("goldenrod3", "firebrick4"), bty='n', cex=1.2) 
+        string1 <- sprintf("Radar chart of a %1.0f years old %s %s that is %1.0f cm tall.",input$AgeYr, raceFull, genderFull, input$height_cm)
+        test2 <- text(0,-1.1,string1) #Demog
+        string1 <- sprintf("Trunk Fat Mass/FMI: %1.1f/%1.1f.   Trunk Lean Mass/LMI: %1.1f/%1.1f.",input$TRUNK_FAT,trunkFmi, input$TRUNK_LEAN, trunkLmi)
+        test2 <- text(0,-1.2,string1) #Trunk Info
+        string1 <- sprintf("Right/Left Arm FMI: %1.1f/%1.1f   Right/Left Arm LMI: %1.1f/%1.1f.",rightArmFmi, leftArmFmi, rightArmLmi, leftArmLmi)
+        test2 <- text(0,-1.3,string1) #Arm Info
+        string1 <- sprintf("Right/Left Arm Fat Mass: %1.1f/%1.1f   Right/Left Arm Lean Mass: %1.1f/%1.1f.",input$RARM_FAT, input$LARM_FAT, input$RARM_LEAN, input$LARM_LEAN)
+        test2 <- text(0,-1.4,string1) #Arm Info
+        string1 <- sprintf("Right/Left Leg FMI: %1.1f/%1.1f   Right/Left Leg LMI: %1.1f/%1.1f.",rightLegFmi, leftLegFmi, rightLegLmi, leftLegLmi)
+        test2 <- text(0,-1.5,string1) #Leg Info
+        string1 <- sprintf("Right/Left Leg Fat Mass: %1.1f/%1.1f   Right/Left Leg Lean Mass: %1.1f/%1.1f.",input$R_LEG_FAT, input$L_LEG_FAT, input$R_LEG_LEAN, input$L_LEG_LEAN)
+        test2 <- text(0,-1.6,string1) #Arm Info
+        dev.off()
+        # pdf(file = test1)
+
+      })
+      
        })
+    
   })
