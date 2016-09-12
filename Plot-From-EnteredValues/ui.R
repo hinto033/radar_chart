@@ -30,8 +30,10 @@ shinyUI(fluidPage(
           column(3,numericInput("L_LEG_FAT", label = h6("Left leg Fat Mass (kg)"),value = 5.0, step = 0.1)),
           column(3,numericInput("L_LEG_LEAN", label = h6("Left leg Lean Mass (kg)"),value = 7.0, step = 0.1)) ),
   #Fifth row contains save button and the radar chart map.
-  fluidRow( 
-          column(4,actionButton("saveAction", label = "click to save output")),
+  fluidRow( style = "padding-top: 50px;", style = "padding-left: 50px",
+          column(4,actionButton("saveAction", label = "click to save output"),
+                 br(),
+                 textInput("Filename", label = h5("Enter Desired Filename Below: "), value = "MyPlotName") ),
           column(4,plotOutput("map")) )
 ))#End of shiny and fluidpage
 

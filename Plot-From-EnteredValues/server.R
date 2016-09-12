@@ -10,9 +10,7 @@ library(shiny)
 #Clean up variable Names
 #Mess with ordering
 #Fix tabbing
-#Overlay image behind the radar chart
-#Work on the ui.r
-#Think about R Shiny widget types to use.
+#Make Readme
 
 #  Formula to convert from FMI/LMI value (y) to FMI/LMI z score (z)
 # z = ( y / m)^L - 1 / (L*S)
@@ -255,32 +253,40 @@ shinyServer(
       colnames(zDataFmi) <- c("Z_TR", "Z_RA", "Z_RL", "Z_LL", "Z_LA")
       colnames(zDataLmi) <- c("Z_TR", "Z_RA", "Z_RL", "Z_LL", "Z_LA")
       ind1Data <- rbind(maxmin,zDataFmi[1,],zDataLmi[1,])   #Formatting in structure radarchart requires
-      #Plots the radar chart data
-      radarPlot <- radarchart(ind1Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2, 
-                 pcol = c("goldenrod3", "firebrick4"),
-                 vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
-                 title="Individual FMI/LMI Chart")
-      legend('topright', c("FMI", "LMI") , lwd=2, 
-             col=c("goldenrod3", "firebrick4"), bty='n', cex=1.2) 
       
+      #Attempt to import overlaying image
+      # img<-readPNG("data/Capture.PNG")
+      img<-readPNG("data/RoundTry2_Mid2.PNG")
+      w <- matrix(rgb(img[,,1],img[,,2],img[,,3], img[,,4] * 0.2), nrow=dim(img)[1])
+      #Plots the radar chart data
+      radarPlot <-radarchart(ind1Data, axistype=1, seg=4, cex.main=1, plty=1, plwd=2.5, cglwd=1.8, cglty = 2,
+                 pcol = c("goldenrod3", "firebrick4"),
+                 vlabels=c("TR", "RA", "RL", "LL", "LA"), vlcex = 1.2, caxislabels=c("-2","-1","0","1","2"), calcex = 1.1,
+                 title="Individual FMI/LMI Chart")
+      lim<-par()
+      rasterImage(w,lim$usr[1], lim$usr[3], lim$usr[2],lim$usr[4])
+      legend('topright', c("FMI", "LMI") , lwd=3, 
+             col=c("goldenrod3", "firebrick4"), bty='n', cex=1.5) 
       
       #Waits for person to click the 'save button'
       observeEvent(input$saveAction, {
-        
-        #select save folder
-          #TODO
-        #Arrange save data
-          #TODO
         #Opens ability to write to PDF
-        pdf(file = "myPlot.pdf", height = 11, width = 8.5)
+        str <- sprintf("SavedPlots/%s.pdf",input$Filename)
+        fileName =str
+        print(fileName)
+        pdf(file = fileName, height = 11, width = 8.5)
         
+        img<-readPNG("data/RoundTry2_Mid2.PNG")
+        w <- matrix(rgb(img[,,1],img[,,2],img[,,3], img[,,4] * 0.2), nrow=dim(img)[1])
         #Puts the radar chart in the PDF
-        test1 <- radarchart(ind1Data, axistype=3, seg=4, cex.main=1, plty=1, plwd=2,
-                            pcol = c("goldenrod3", "firebrick4"),
-                            vlabels=c("TR", "RA", "RL", "LL", "LA"), caxislabels=c("-2","-1","0","1","2"),
-                            title="Individual FMI/LMI Chart")
+        radarPlot <-radarchart(ind1Data, axistype=1, seg=4, cex.main=1, plty=1, plwd=2.5, cglwd=1.8, cglty = 2,
+                   pcol = c("goldenrod3", "firebrick4"),
+                   vlabels=c("TR", "RA", "RL", "LL", "LA"), vlcex = 1.2, caxislabels=c("-2","-1","0","1","2"), calcex = 1.1,
+                   title="Individual FMI/LMI Chart")
+        lim<-par()
+        rasterImage(w,lim$usr[1], lim$usr[3], lim$usr[2],lim$usr[4])
         legend('topright', c("FMI", "LMI") , lwd=2, 
-               col=c("goldenrod3", "firebrick4"), bty='n', cex=1.2) 
+               col=c("goldenrod3", "firebrick4"), bty='n', cex=1.5) 
         
         # Adds descriptive text to PDF
         str <- sprintf("Radar chart of a %1.0f years old %s %s that is %1.0f cm tall.",input$AgeYr, raceFull, genderFull, input$height_cm)
