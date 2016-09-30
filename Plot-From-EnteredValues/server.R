@@ -2,7 +2,7 @@
 
 library(fmsb)
 library(shiny)
-
+library(png)
 
 ##Need to:
 #Make subfnctions and call them
@@ -289,10 +289,10 @@ shinyServer(
                col=c("goldenrod3", "firebrick4"), bty='n', cex=1.5) 
         
         # Adds descriptive text to PDF
-        str <- sprintf("Radar chart of a %1.0f years old %s %s that is %1.0f cm tall.",input$AgeYr, raceFull, genderFull, input$height_cm)
+        str <- sprintf("Radar chart of a %1.0f year old %s %s that is %1.0f cm tall.",input$AgeYr, raceFull, genderFull, input$height_cm)
         fileTxt <- text(0,-1.1,str) #Demog
         
-        str <- sprintf("Trunk Fat Mass/FMI: %1.1f/%1.1f.   Trunk Lean Mass/LMI: %1.1f/%1.1f.",input$TRUNK_FAT,trunkFmi, input$TRUNK_LEAN, trunkLmi)
+        str <- sprintf("Trunk Fat Mass/FMI: %1.1f/%1.1f   Trunk Lean Mass/LMI: %1.1f/%1.1f.",input$TRUNK_FAT,trunkFmi, input$TRUNK_LEAN, trunkLmi)
         fileTxt <- text(0,-1.2,str) #Trunk Info
         
         str <- sprintf("Right/Left Arm FMI: %1.1f/%1.1f   Right/Left Arm LMI: %1.1f/%1.1f.",rightArmFmi, leftArmFmi, rightArmLmi, leftArmLmi)
